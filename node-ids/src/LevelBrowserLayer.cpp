@@ -333,7 +333,6 @@ $register_ids(LevelBrowserLayer) {
     verifyIDSafe(m_countText, "level-count-label");
     verifyIDSafe(m_pageBtn, "page-button");
     verifyIDSafe(m_folderBtn, "folder-button");
-    verifyIDSafe(m_allObjectsToggler, "select-all-button");
 
     //menus
     verifyParentIDSafe(m_rightArrow, "next-page-menu");
@@ -343,7 +342,6 @@ $register_ids(LevelBrowserLayer) {
     verifyParentIDSafe(m_refreshBtn, "refresh-menu");
     verifyParentIDSafe(m_pageBtn, "page-menu");
     verifyParentIDSafe(m_folderBtn, "page-menu");
-    verifyParentIDSafe(m_allObjectsToggler, "delete-menu");
 }
 
 struct LevelBrowserLayerIDs : Modify<LevelBrowserLayerIDs, LevelBrowserLayer> {
