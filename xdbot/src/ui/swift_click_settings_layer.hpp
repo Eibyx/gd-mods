@@ -42,9 +42,9 @@ private:
     countInput->setString(std::to_string(Mod::get()->getSavedValue<int64_t>(
                                              "swift_click_count", 2))
                               .c_str());
-    countInput->getInputNode()->setDelegate(this);
-    countInput->getInputNode()->setAllowedChars("0123456789");
-    countInput->getInputNode()->setMaxLabelLength(2);
+    countInput->setCommonFilter(CommonFilter::Uint);
+    countInput->setMaxCharCount(2);
+    countInput->setCallback([this](std::string const&) { textChanged(nullptr); });
     m_mainLayer->addChild(countInput);
 
     // Key Code
@@ -58,9 +58,9 @@ private:
     keyInput->setString(std::to_string(Mod::get()->getSavedValue<int64_t>(
                                            "swift_click_key", 72))
                             .c_str());
-    keyInput->getInputNode()->setDelegate(this);
-    keyInput->getInputNode()->setAllowedChars("0123456789");
-    keyInput->getInputNode()->setMaxLabelLength(3);
+    keyInput->setCommonFilter(CommonFilter::Uint);
+    keyInput->setMaxCharCount(3);
+    keyInput->setCallback([this](std::string const&) { textChanged(nullptr); });
     m_mainLayer->addChild(keyInput);
 
     CCLabelBMFont *hint =
