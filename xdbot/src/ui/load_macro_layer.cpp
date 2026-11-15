@@ -310,7 +310,15 @@ bool LoadMacroLayer::setup() {
 
     searchInput = TextInput::create(235, "Search Macro", "bigFont.fnt");
     searchInput->setPositionY(100);
-    searchInput->setDelegate(this);
+    searchInput->setCallback([this](std::string const&) {
+        search = Utils::toLower(searchInput->getString());
+        if (search != "") {
+            searchOff->setVisible(true);
+            searchOff->setOpacity(184);
+        } else
+            searchOff->setVisible(false);
+        reloadList(0);
+    });
     menu->addChild(searchInput);
 
     CCSprite *emptyBtn =
