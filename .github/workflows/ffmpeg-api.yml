@@ -24,11 +24,16 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
+      - name: Set up CMake
+        uses: jwlawson/actions-setup-cmake@v2
+        with:
+          cmake-version: "3.20.x"
+
       - name: Build static FFmpeg libraries
         run: |
           set -euo pipefail
           sudo apt-get update -qq
-          sudo apt-get install -y -qq cmake make pkg-config nasm git curl wget p7zip-full python3 > /dev/null
+          sudo apt-get install -y -qq make pkg-config nasm git curl wget p7zip-full python3 > /dev/null
           git clone --depth 1 https://github.com/ccchanged/ffmpeg-android-maker.git ffmpeg-android-maker
           cd ffmpeg-android-maker
           export ANDROID_SDK_HOME=/usr/local/lib/android/sdk
