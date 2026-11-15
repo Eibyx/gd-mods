@@ -83,6 +83,8 @@ void LoadLayer::onDelete(CCObject*) {
 
 bool LoadLayer::init() {
     Popup::init(246, 233);
+    m_mainLayer->setContentSize({246, 233});
+    if (m_bgSprite) m_bgSprite->setContentSize({246, 233});
 
     std::vector<GradientConfig> gradients = Utils::getSavedGradients();
 

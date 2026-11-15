@@ -36,6 +36,8 @@ const std::string buttonIDs[6] = {
   static class *create() {                                                     \
     class *ret = new class();                                                  \
     if (ret->init(width, height, Utils::getTexture().c_str())) {               \
+      ret->m_mainLayer->setContentSize({(float)(width), (float)(height)});       \
+      if (ret->m_bgSprite) ret->m_bgSprite->setContentSize({(float)(width), (float)(height)}); \
       ret->setup();                                                            \
       ret->autorelease();                                                      \
       return ret;                                                              \

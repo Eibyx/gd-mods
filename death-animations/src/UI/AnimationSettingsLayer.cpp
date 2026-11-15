@@ -53,6 +53,8 @@ void AnimationSettingsLayer::onRestore(CCObject*) {
 
 bool AnimationSettingsLayer::init() {
     Popup::init(300, 200);
+    m_mainLayer->setContentSize({300, 200});
+    if (m_bgSprite) m_bgSprite->setContentSize({300, 200});
 
     setTitle("Animation Settings");
     

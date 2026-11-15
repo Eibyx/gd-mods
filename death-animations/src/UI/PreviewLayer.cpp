@@ -149,6 +149,8 @@ bool PreviewLayer::init() {
     CCSize winSize = CCDirector::get()->getWinSize();
 
     Popup::init(winSize.width, winSize.height);
+    m_mainLayer->setContentSize({winSize.width, winSize.height});
+    if (m_bgSprite) m_bgSprite->setContentSize({winSize.width, winSize.height});
 
     m_noElasticity = true;
     

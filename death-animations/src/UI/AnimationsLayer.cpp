@@ -53,6 +53,8 @@ void AnimationsLayer::onSettings(CCObject*) {
 
 bool AnimationsLayer::init() {
     Popup::init(337, 240);
+    m_mainLayer->setContentSize({337, 240});
+    if (m_bgSprite) m_bgSprite->setContentSize({337, 240});
     
     setTitle("Death Animations");
     

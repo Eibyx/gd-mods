@@ -653,6 +653,8 @@ bool GradientLayer::scrollWheel(float y, float) {
 
 bool GradientLayer::init() {
     Popup::init(320, 280);
+    m_mainLayer->setContentSize({320, 280});
+    if (m_bgSprite) m_bgSprite->setContentSize({320, 280});
 
     Dispatch<CCNode*, CCRect>("timestepyt.gdneko/create-neko-rect").send(m_mainLayer, {178.5f, 75, 259, 126});
 

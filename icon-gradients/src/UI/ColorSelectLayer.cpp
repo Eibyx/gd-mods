@@ -36,6 +36,8 @@ void ColorSelectLayer::createButton(int color, const CCPoint& pos) {
 
 bool ColorSelectLayer::init() {
     Popup::init(450, 245, "GJ_square05.png");
+    m_mainLayer->setContentSize({450, 245});
+    if (m_bgSprite) m_bgSprite->setContentSize({450, 245});
     
     setTitle("Select Color");
 
