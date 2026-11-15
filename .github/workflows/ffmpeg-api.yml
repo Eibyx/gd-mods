@@ -41,7 +41,7 @@ jobs:
         uses: geode-sdk/build-geode-mod@main
         with:
           sdk: "latest"
-          bindings: "Exodi-dio/bindings"
+          bindings: "geode-sdk/bindings"
           bindings-ref: "main"
           path: ffmpeg-api
           target: ${{ matrix.target }}
