@@ -38,9 +38,9 @@ private:
     countInput->setString(std::to_string(Mod::get()->getSavedValue<int64_t>(
                                              "auto_swift_click_count", 2))
                               .c_str());
-    countInput->getInputNode()->setDelegate(this);
-    countInput->getInputNode()->setAllowedChars("0123456789");
-    countInput->getInputNode()->setMaxLabelLength(2);
+    countInput->setCallback([this](std::string const&) { textChanged(nullptr); });
+    countInput->setFilter("0123456789");
+    countInput->setMaxCharCount(2);
     m_mainLayer->addChild(countInput);
 
     CCLabelBMFont *hint =

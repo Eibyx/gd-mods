@@ -68,9 +68,9 @@ private:
       input = TextInput::create(70, placeholder, "chatFont.fnt");
       input->setPosition(pos);
       input->setString(value.c_str());
-      input->getInputNode()->setDelegate(this);
-      input->getInputNode()->setAllowedChars("0123456789");
-      input->getInputNode()->setMaxLabelLength(maxLength);
+      input->setCallback([this](std::string const&) { textChanged(nullptr); });
+      input->setFilter("0123456789");
+      input->setMaxCharCount(maxLength);
       m_mainLayer->addChild(input);
     };
 

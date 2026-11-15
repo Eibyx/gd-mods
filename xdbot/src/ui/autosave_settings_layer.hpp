@@ -60,9 +60,9 @@ private:
 		intervalInput->setPosition({169, 130});
 		intervalInput->setScale(0.675f);
 		intervalInput->setString(Mod::get()->getSavedValue<std::string>("autosave_interval").c_str());
-		intervalInput->getInputNode()->setDelegate(this);
-		intervalInput->getInputNode()->setAllowedChars("0123456789.");
-		intervalInput->getInputNode()->setMaxLabelLength(4);
+		intervalInput->setCallback([this](std::string const&) { textChanged(nullptr); });
+		intervalInput->setFilter("0123456789.");
+		intervalInput->setMaxCharCount(4);
 		m_mainLayer->addChild(intervalInput);
 
 		intervalToggle = CCMenuItemToggler::create(
@@ -130,9 +130,7 @@ private:
 		intervalInput->setEnabled(g.autosaveIntervalEnabled);
 		// intervalInput->getInputNode()->m_placeholderLabel->setOpacity(g.autosaveIntervalEnabled ? 255 : 100);
 		if (!g.autosaveIntervalEnabled) {
-			intervalInput->getInputNode()->detachWithIME();
-			intervalInput->getInputNode()->onClickTrackNode(false);
-			intervalInput->getInputNode()->m_cursor->setVisible(false);
+			intervalInput->detachWithIME();
 		}
 
 	}

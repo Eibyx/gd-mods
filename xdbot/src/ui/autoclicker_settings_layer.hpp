@@ -82,17 +82,17 @@ private:
 		holdInput = TextInput::create(50, "Frames", "chatFont.fnt");
 		holdInput->setPosition({72, 150});
 		holdInput->setString(std::to_string(Mod::get()->getSavedValue<int64_t>("autoclicker_hold_for")).c_str());
-		holdInput->getInputNode()->setDelegate(this);
-		holdInput->getInputNode()->setAllowedChars("0123456789");
-		holdInput->getInputNode()->setMaxLabelLength(4);
+		holdInput->setCallback([this](std::string const&) { textChanged(nullptr); });
+		holdInput->setFilter("0123456789");
+		holdInput->setMaxCharCount(4);
 		m_mainLayer->addChild(holdInput);
 
 		releaseInput = TextInput::create(50, "Frames", "chatFont.fnt");
 		releaseInput->setPosition({x, 150});
 		releaseInput->setString(std::to_string(Mod::get()->getSavedValue<int64_t>("autoclicker_release_for")).c_str());
-		releaseInput->getInputNode()->setDelegate(this);
-		releaseInput->getInputNode()->setAllowedChars("0123456789");
-		releaseInput->getInputNode()->setMaxLabelLength(4);
+		releaseInput->setCallback([this](std::string const&) { textChanged(nullptr); });
+		releaseInput->setFilter("0123456789");
+		releaseInput->setMaxCharCount(4);
 		m_mainLayer->addChild(releaseInput);
 
 		// ------------------------
@@ -127,17 +127,17 @@ private:
 		holdInput2 = TextInput::create(50, "Frames", "chatFont.fnt");
 		holdInput2->setPosition({72, 70});
 		holdInput2->setString(std::to_string(Mod::get()->getSavedValue<int64_t>("autoclicker_hold_for2")).c_str());
-		holdInput2->getInputNode()->setDelegate(this);
-		holdInput2->getInputNode()->setAllowedChars("0123456789");
-		holdInput2->getInputNode()->setMaxLabelLength(4);
+		holdInput2->setCallback([this](std::string const&) { textChanged(nullptr); });
+		holdInput2->setFilter("0123456789");
+		holdInput2->setMaxCharCount(4);
 		m_mainLayer->addChild(holdInput2);
 
 		releaseInput2 = TextInput::create(50, "Frames", "chatFont.fnt");
 		releaseInput2->setPosition({x, 70});
 		releaseInput2->setString(std::to_string(Mod::get()->getSavedValue<int64_t>("autoclicker_release_for2")).c_str());
-		releaseInput2->getInputNode()->setDelegate(this);
-		releaseInput2->getInputNode()->setAllowedChars("0123456789");
-		releaseInput2->getInputNode()->setMaxLabelLength(4);
+		releaseInput2->setCallback([this](std::string const&) { textChanged(nullptr); });
+		releaseInput2->setFilter("0123456789");
+		releaseInput2->setMaxCharCount(4);
 		m_mainLayer->addChild(releaseInput2);
 
 		toggleP1 = CCMenuItemToggler::create(
@@ -194,9 +194,7 @@ private:
 		holdInput->setEnabled(g.autoclickerP1);
 		// holdInput->getInputNode()->m_placeholderLabel->setOpacity(g.autoclickerP1 ? 255 : 100);
 		if (!g.autoclickerP1) {
-			holdInput->getInputNode()->detachWithIME();
-			holdInput->getInputNode()->onClickTrackNode(false);
-			holdInput->getInputNode()->m_cursor->setVisible(false);
+			holdInput->detachWithIME();
 		}
 
 		holdTitle2->setOpacity(g.autoclickerP2 ? 255 : 100);
@@ -205,9 +203,7 @@ private:
 		holdInput2->setEnabled(g.autoclickerP2);
 		// holdInput2->getInputNode()->m_placeholderLabel->setOpacity(g.autoclickerP2 ? 255 : 100);
 		if (!g.autoclickerP2) {
-			holdInput2->getInputNode()->detachWithIME();
-			holdInput2->getInputNode()->onClickTrackNode(false);
-			holdInput2->getInputNode()->m_cursor->setVisible(false);
+			holdInput2->detachWithIME();
 		}
 
 		releaseTitle->setOpacity(g.autoclickerP1 ? 255 : 100);
@@ -216,9 +212,7 @@ private:
 		releaseInput->setEnabled(g.autoclickerP1);
 		// releaseInput->getInputNode()->m_placeholderLabel->setOpacity(g.autoclickerP1 ? 255 : 100);
 		if (!g.autoclickerP1) {
-			releaseInput->getInputNode()->detachWithIME();
-			releaseInput->getInputNode()->onClickTrackNode(false);
-			releaseInput->getInputNode()->m_cursor->setVisible(false);
+			releaseInput->detachWithIME();
 		}
 
 		releaseTitle2->setOpacity(g.autoclickerP2 ? 255 : 100);
@@ -227,9 +221,7 @@ private:
 		releaseInput2->setEnabled(g.autoclickerP2);
 		// releaseInput2->getInputNode()->m_placeholderLabel->setOpacity(g.autoclickerP2 ? 255 : 100);
 		if (!g.autoclickerP2) {
-			releaseInput2->getInputNode()->detachWithIME();
-			releaseInput2->getInputNode()->onClickTrackNode(false);
-			releaseInput2->getInputNode()->m_cursor->setVisible(false);
+			releaseInput2->detachWithIME();
 		}
 	}
 

@@ -303,9 +303,17 @@ bool MacroTimelineLayer::setup() {
   frameInput->setPosition({inspectorCenterX - 2.f, row1});
   frameInput->setScale(0.55f);
   frameInput->setString("0");
-  frameInput->getInputNode()->setAllowedChars("0123456789");
-  frameInput->getInputNode()->setMaxLabelLength(8);
-  frameInput->getInputNode()->setDelegate(this);
+  frameInput->setFilter("0123456789");
+  frameInput->setMaxCharCount(8);
+  frameInput->setCallback([this](std::string const& text) {
+    if (text.empty()) return;
+    int frame = geode::utils::numFromString<int>(text).unwrapOr(currentFrame);
+    if (selectedIndex >= 0 && selectedIndex < static_cast<int>(inputs.size())) {
+      inputs[selectedIndex].frame = std::max(0, frame);
+      sortInputs();
+      markUnsaved();
+    }
+  });
   m_mainLayer->addChild(frameInput, 14);
 
   addValueBox(inspectorCenterX - 2.f, row2, 70.f, actionValueLabel);
@@ -697,7 +705,7 @@ void MacroTimelineLayer::nudgeFrame(CCObject *obj) {
 void MacroTimelineLayer::textChanged(CCTextInputNode *inputNode) {
   if (!inputNode)
     return;
-  if (inputNode != frameInput->getInputNode())
+  if (inputNode != nullptr)
     return;
   auto text = inputNode->getString();
   if (text.empty())

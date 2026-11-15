@@ -56,8 +56,8 @@ private:
     input = TextInput::create(50.f, "0");
     input->setPosition({68, 56});
     input->setScale(0.65f);
-    input->getInputNode()->setAllowedChars("0123456789");
-    input->getInputNode()->setDelegate(this);
+    input->setFilter("0123456789");
+    input->setCallback([this](std::string const&) { textChanged(nullptr); });
     input->setString(
         Mod::get()->getSavedValue<std::string>("trajectory_length").c_str());
     m_mainLayer->addChild(input);
