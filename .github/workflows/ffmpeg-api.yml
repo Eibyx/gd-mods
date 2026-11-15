@@ -33,6 +33,7 @@ jobs:
           cd ffmpeg-android-maker
           export ANDROID_SDK_HOME=/usr/local/lib/android/sdk
           export ANDROID_NDK_HOME=/usr/local/lib/android/sdk/ndk/29.0.14206865
+          export CMAKE_POLICY_VERSION_MINIMUM=3.5
           ./ffmpeg-android-maker.sh --enable-libaom --enable-libvpx --enable-libx264 --enable-libx265 --android-api-level=24 --target-abis=${{ matrix.android-abi }}
           mkdir -p ../ffmpeg-api/lib/${{ matrix.android-abi }}
           cp output/lib/${{ matrix.android-abi }}/*.a ../ffmpeg-api/lib/${{ matrix.android-abi }}/
