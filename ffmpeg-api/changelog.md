@@ -1,6 +1,10 @@
+# 2.1.1
+- Ported to Geode 6.0.0-alpha.2 / GD 2.2091, Android only.
+- iOS, Windows and MacOS is not supported by now.
+
 # 2.1.0
 - Updated to FFmpeg 8.1.2
-- Ported to Geode 6.0.0-alpha.2 / GD 2.2091, Android only.
+- Ported to Geode 6.0.0-alpha.1 / GD 2.2091, Android only.
 - iOS, Windows and MacOS is not supported by now.
 
 # 1.2.2
