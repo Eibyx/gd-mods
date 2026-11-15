@@ -98,7 +98,7 @@ private:
     void updateUI();
 
     void colorValueChanged(ccColor3B) override;
-    void textChanged(CCTextInputNode*) override;
+    void textChanged();
     void keyDown(enumKeyCodes, double) override;
     bool scrollWheel(float, float) override;
 
