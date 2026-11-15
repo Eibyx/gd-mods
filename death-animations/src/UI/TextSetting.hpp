@@ -1,11 +1,9 @@
 #include "BaseSetting.hpp"
 
-class TextSetting : public BaseSetting, public TextInputDelegate {
+class TextSetting : public BaseSetting {
 
 private:
 
-    void textChanged(CCTextInputNode*) override;
-    
     void init(float) override;
 
     SETTING_CTOR_CREATE(TextSetting, BaseSetting)

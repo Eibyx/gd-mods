@@ -2,32 +2,32 @@
 
 #include "Other/Utils.hpp"
 
-void TextSetting::textChanged(CCTextInputNode* node) {
-    std::string str = node->getString();
-    Utils::saveSetting(m_animation.id, m_setting.id, str);
-}
-
 void TextSetting::init(float y) {
     BaseSetting::init(y);
 
     TextInput* input = TextInput::create(210, "Text");
     input->setCommonFilter(CommonFilter::Any);
-    input->setMaxCharCount(313); // random ass number i generated
-   	input->setPosition({m_nameLabel->getPositionX() + m_nameLabel->getContentWidth() * m_nameLabel->getScale() + 5, 10});
-   	input->setAnchorPoint({0, 0.4f});
-   	input->setScale(0.525f);
-   	input->getInputNode()->setDelegate(this);
-   	
+    input->setMaxCharCount(313);
+    input->setPosition({m_nameLabel->getPositionX() + m_nameLabel->getContentWidth() * m_nameLabel->getScale() + 5, 10});
+    input->setAnchorPoint({0, 0.4f});
+    input->setScale(0.525f);
+    input->setCallback([this, input](std::string const& value) {
+        std::string str = value;
+        if (str.length() > 313) {
+            str.resize(313);
+        }
+        Utils::saveSetting(m_animation.id, m_setting.id, str);
+    });
+
     auto str = Utils::getSettingString(m_animation.id, m_setting.id);
 
-    
     if (str.length() > 313) {
         str.resize(313);
     }
-    
+
     input->setString(str.c_str());
-    
+
     addChild(input);
-    
+
     setInfoButtonPos(input);
 }

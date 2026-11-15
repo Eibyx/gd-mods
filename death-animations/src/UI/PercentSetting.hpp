@@ -1,14 +1,12 @@
 #include "BaseSetting.hpp"
 
-class PercentSetting : public BaseSetting, public TextInputDelegate {
+class PercentSetting : public BaseSetting {
 
 private:
 
     CCLabelBMFont* m_percentLabel = nullptr;
 
     TextInput* m_input = nullptr;
-
-    void textChanged(CCTextInputNode*) override;
 
     void init(float) override;
 
