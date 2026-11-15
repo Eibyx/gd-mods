@@ -12,11 +12,11 @@ Every `.geode` is a combined Android32 + Android64 build. Install with Geode.
 |-----|--------|---------|
 | Jukebox | `fleym.nongd` | [v2.3](https://github.com/Exodi-dio/gd-mods/releases/tag/jukebox-v2.3-crossplatform) |
 | GDH | `tobyadd.gdh` | [v4.3](https://github.com/Exodi-dio/gd-mods/releases/tag/gdh-v4.3-android) |
-| xdBot | `zilko.xdbot` | [v2.6.8](https://github.com/Exodi-dio/gd-mods/releases/tag/xdbot-v2.6.8-android) |
+| xdBot | `zilko.xdbot` | [v2.6.9](https://github.com/Exodi-dio/gd-mods/releases/tag/xdbot-v2.6.9-android) |
 | FFmpeg API | `eclipse.ffmpeg-api` | [v2.1.1](https://github.com/Exodi-dio/gd-mods/releases/tag/ffmpeg-api-v2.1.1-android) |
 | Node IDs | `geode.node-ids` | [v1.23.5](https://github.com/Exodi-dio/gd-mods/releases/tag/node-ids-v1.23.5-android) |
-| Icon Gradients | `zilko.icon_gradients` | [v1.3.12](https://github.com/Exodi-dio/gd-mods/releases/tag/icon-gradients-v1.3.12-android) |
-| Death Animations | `zilko.death_animations` | [v1.1.5](https://github.com/Exodi-dio/gd-mods/releases/tag/death-animations-v1.1.5-android) |
+| Icon Gradients | `zilko.icon_gradients` | [v1.3.13](https://github.com/Exodi-dio/gd-mods/releases/tag/icon-gradients-v1.3.13-android) |
+| Death Animations | `zilko.death_animations` | [v1.1.6](https://github.com/Exodi-dio/gd-mods/releases/tag/death-animations-v1.1.6-android) |
 
 
 ## Notes
