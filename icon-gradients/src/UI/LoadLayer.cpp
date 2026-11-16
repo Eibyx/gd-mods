@@ -132,6 +132,7 @@ bool LoadLayer::init() {
     m_mainLayer->addChild(lbl);
 
     m_scrollLayer = ScrollLayer::create({204, 159, 204, 159}, true, true);
+    m_scrollLayer->setAnchorPoint({0.f, 0.f});
     m_scrollLayer->setPosition(border->getPosition());
 
     m_scrollLayer->m_contentLayer->setLayout(

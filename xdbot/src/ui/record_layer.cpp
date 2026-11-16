@@ -668,11 +668,12 @@ void RecordLayer::openKeybinds(CCObject *) {
   if (!mainLayer)
     return showKeybindsWarning();
 
-  CCNode *scrollLayer = mainLayer->getChildByID("ScrollLayer");
+  auto scrollLayer = typeinfo_cast<geode::ScrollLayer *>(
+      mainLayer->getChildByID("ScrollLayer"));
   if (!scrollLayer)
     return showKeybindsWarning();
 
-  CCNode *contentLayer = scrollLayer->getChildByID("content-layer");
+  CCNode *contentLayer = scrollLayer->m_contentLayer;
   if (!contentLayer)
     return showKeybindsWarning();
 
