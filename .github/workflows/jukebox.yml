@@ -11,8 +11,10 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        target: [Android32, Android64]
+        target: [Win64, Android32, Android64]
         include:
+          - target: Win64
+            os: windows-latest
           - target: Android32
             os: ubuntu-latest
           - target: Android64
