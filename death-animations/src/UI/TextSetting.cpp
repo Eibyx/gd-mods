@@ -5,7 +5,8 @@
 void TextSetting::init(float y) {
     BaseSetting::init(y);
 
-    TextInput* input = TextInput::create(210, "Text");
+    TextInput* input = TextInput::create({210, 30}, "Text");
+    input->setFontScale(0.5f);
     input->setCommonFilter(CommonFilter::Any);
     input->setMaxCharCount(313);
     input->setPosition({m_nameLabel->getPositionX() + m_nameLabel->getContentWidth() * m_nameLabel->getScale() + 5, 10});

@@ -25,7 +25,8 @@ private:
         CCMenu* menu = CCMenu::create();
         m_mainLayer->addChild(menu);
 
-        authorInput = TextInput::create(104, "Author", "chatFont.fnt");
+        authorInput = TextInput::create({104, 30}, "Author", "chatFont.fnt");
+        authorInput->setFontScale(0.5f);
         authorInput->setPosition({ 61, 42 });
         authorInput->setString(GJAccountManager::sharedState()->m_username.c_str());
         menu->addChild(authorInput);
@@ -36,14 +37,16 @@ private:
         lbl->setScale(0.575);
         menu->addChild(lbl);
 
-        nameInput = TextInput::create(104, "Name", "chatFont.fnt");
+        nameInput = TextInput::create({104, 30}, "Name", "chatFont.fnt");
+        nameInput->setFontScale(0.5f);
         nameInput->setPosition({ -61, 42 });
 
         nameInput->setString(Global::get().macro.levelInfo.name);
 
         menu->addChild(nameInput);
 
-        descInput = TextInput::create(226, "Description (optional)", "chatFont.fnt");
+        descInput = TextInput::create({226, 30}, "Description (optional)", "chatFont.fnt");
+        descInput->setFontScale(0.5f);
         descInput->setPositionY(-8);
         menu->addChild(descInput);
 

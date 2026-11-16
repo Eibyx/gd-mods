@@ -236,7 +236,8 @@ void HacksTab::addConfigIntInput(const std::string& labelText, const std::string
     
     auto node = CCMenu::create();
     
-    auto input = geode::TextInput::create(60.f, "Val", "GoogleSans.fnt"_spr);
+    auto input = geode::TextInput::create({60.f, 30}, "Val", "GoogleSans.fnt"_spr);
+    input->setFontScale(0.5f);
     if (auto* bg = input->getChildByType<geode::NineSlice>(0)) { 
         bg->setColor({71, 71, 131}); 
         bg->setOpacity(255); 
@@ -276,7 +277,8 @@ void HacksTab::addConfigFloatInput(const std::string& labelText, const std::stri
     
     auto node = CCMenu::create();
     
-    auto input = geode::TextInput::create(60.f, "Val", "GoogleSans.fnt"_spr);
+    auto input = geode::TextInput::create({60.f, 30}, "Val", "GoogleSans.fnt"_spr);
+    input->setFontScale(0.5f);
     if (auto* bg = input->getChildByType<geode::NineSlice>(0)) { 
         bg->setColor({71, 71, 131}); 
         bg->setOpacity(255); 

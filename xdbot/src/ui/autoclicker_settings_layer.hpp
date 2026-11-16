@@ -79,7 +79,8 @@ private:
 		releaseLbl->setOpacity(86);
 		m_mainLayer->addChild(releaseLbl);
 
-		holdInput = TextInput::create(50, "Frames", "chatFont.fnt");
+		holdInput = TextInput::create({50, 30}, "Frames", "chatFont.fnt");
+		holdInput->setFontScale(0.5f);
 		holdInput->setPosition({72, 150});
 		holdInput->setString(std::to_string(Mod::get()->getSavedValue<int64_t>("autoclicker_hold_for")).c_str());
 		holdInput->setCallback([this](std::string const&) { textChanged(nullptr); });
@@ -87,7 +88,8 @@ private:
 		holdInput->setMaxCharCount(4);
 		m_mainLayer->addChild(holdInput);
 
-		releaseInput = TextInput::create(50, "Frames", "chatFont.fnt");
+		releaseInput = TextInput::create({50, 30}, "Frames", "chatFont.fnt");
+		releaseInput->setFontScale(0.5f);
 		releaseInput->setPosition({x, 150});
 		releaseInput->setString(std::to_string(Mod::get()->getSavedValue<int64_t>("autoclicker_release_for")).c_str());
 		releaseInput->setCallback([this](std::string const&) { textChanged(nullptr); });
@@ -124,7 +126,8 @@ private:
 		releaseLbl2->setOpacity(86);
 		m_mainLayer->addChild(releaseLbl2);
 
-		holdInput2 = TextInput::create(50, "Frames", "chatFont.fnt");
+		holdInput2 = TextInput::create({50, 30}, "Frames", "chatFont.fnt");
+		holdInput2->setFontScale(0.5f);
 		holdInput2->setPosition({72, 70});
 		holdInput2->setString(std::to_string(Mod::get()->getSavedValue<int64_t>("autoclicker_hold_for2")).c_str());
 		holdInput2->setCallback([this](std::string const&) { textChanged(nullptr); });
@@ -132,7 +135,8 @@ private:
 		holdInput2->setMaxCharCount(4);
 		m_mainLayer->addChild(holdInput2);
 
-		releaseInput2 = TextInput::create(50, "Frames", "chatFont.fnt");
+		releaseInput2 = TextInput::create({50, 30}, "Frames", "chatFont.fnt");
+		releaseInput2->setFontScale(0.5f);
 		releaseInput2->setPosition({x, 70});
 		releaseInput2->setString(std::to_string(Mod::get()->getSavedValue<int64_t>("autoclicker_release_for2")).c_str());
 		releaseInput2->setCallback([this](std::string const&) { textChanged(nullptr); });

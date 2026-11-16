@@ -33,7 +33,8 @@ private:
     lbl->setScale(0.35f);
     m_mainLayer->addChild(lbl);
 
-    countInput = TextInput::create(60, "Num", "chatFont.fnt");
+    countInput = TextInput::create({60, 30}, "Num", "chatFont.fnt");
+    countInput->setFontScale(0.5f);
     countInput->setPosition({m_size.width / 2, 58});
     countInput->setString(std::to_string(Mod::get()->getSavedValue<int64_t>(
                                              "auto_swift_click_count", 2))

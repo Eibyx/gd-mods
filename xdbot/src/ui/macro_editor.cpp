@@ -242,7 +242,8 @@ bool MacroEditLayer::setup() {
     lbl->setScale(0.26f);
     menu->addChild(lbl);
 
-    pageInput = TextInput::create(36, "0");
+    pageInput = TextInput::create({36, 30}, "0");
+    pageInput->setFontScale(0.5f);
     pageInput->setFilter("0123456789");
     pageInput->setMaxCharCount(5);
     pageInput->setCallback([this](std::string const& text) {
@@ -271,7 +272,8 @@ bool MacroEditLayer::setup() {
     lbl->setPosition({xPos, yPos});
     selectedInputMenu->addChild(lbl);
 
-    frameInput = TextInput::create(70, "236");
+    frameInput = TextInput::create({70, 30}, "236");
+    frameInput->setFontScale(0.5f);
     frameInput->setPosition({xPos + 91, yPos});
     frameInput->setScale(0.625f);
     frameInput->setFilter("0123456789");

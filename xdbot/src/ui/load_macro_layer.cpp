@@ -308,7 +308,8 @@ bool LoadMacroLayer::setup() {
 
     menu->addChild(btn);
 
-    searchInput = TextInput::create(235, "Search Macro", "bigFont.fnt");
+    searchInput = TextInput::create({235, 30}, "Search Macro", "bigFont.fnt");
+    searchInput->setFontScale(0.5f);
     searchInput->setPositionY(100);
     searchInput->setCallback([this](std::string const&) {
         search = Utils::toLower(searchInput->getString());

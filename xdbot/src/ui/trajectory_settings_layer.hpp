@@ -53,7 +53,8 @@ private:
     lbl->setScale(0.35f);
     m_mainLayer->addChild(lbl);
 
-    input = TextInput::create(50.f, "0");
+    input = TextInput::create({50.f, 30}, "0");
+    input->setFontScale(0.5f);
     input->setPosition({68, 56});
     input->setScale(0.65f);
     input->setFilter("0123456789");

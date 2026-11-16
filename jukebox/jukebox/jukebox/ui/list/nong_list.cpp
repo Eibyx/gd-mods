@@ -105,7 +105,8 @@ bool NongList::init(
     m_backMenu->setID("back-menu");
     this->addChildAtPosition(m_backMenu, Anchor::Left, CCPoint {-10.0f, 0.0f});
 
-    m_searchInput = TextInput::create(size.width - (s_padding * 2), "Search NONGs...");
+    m_searchInput = TextInput::create({size.width - (s_padding * 2), 30}, "Search NONGs...");
+    m_searchInput->setFontScale(0.5f);
     m_searchInput->setID("search-input");
     m_searchInput->setScale(0.75f);
     m_searchInput->setCallback([this](const std::string& query) {

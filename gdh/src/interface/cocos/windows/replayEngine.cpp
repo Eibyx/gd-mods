@@ -156,7 +156,8 @@ protected:
         createLabel("Ultrafast", {ultraFastToggle->getPositionX() - 10.f + ultraFastToggle->getScaledContentWidth(), ultraFastToggle->getPositionY()}, 0.7f);
 
         createLabel("Video Name:", {30.f, 140.f});
-        nameInput = geode::TextInput::create(170.f, "video_name", "GoogleSans.fnt"_spr);
+        nameInput = geode::TextInput::create({170.f, 30}, "video_name", "GoogleSans.fnt"_spr);
+        nameInput->setFontScale(0.5f);
         nameInput->setPosition({245.f, 140.f});
         nameInput->setString(recorder.videoName);
         nameInput->setFilter("ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789.");
@@ -165,7 +166,8 @@ protected:
 
         createLabel("Resolution / FPS:", {30.f, 105.f});
 
-        widthInput = geode::TextInput::create(45.f, "W", "GoogleSans.fnt"_spr);
+        widthInput = geode::TextInput::create({45.f, 30}, "W", "GoogleSans.fnt"_spr);
+        widthInput->setFontScale(0.5f);
         widthInput->setPosition({182.f, 105.f}); 
         widthInput->setString(std::to_string(recorder.width));
         widthInput->setFilter("1234567890");
@@ -177,7 +179,8 @@ protected:
 
         createLabel("x", {210.f, 105.f}, 0.5f);
 
-        heightInput = geode::TextInput::create(45.f, "H", "GoogleSans.fnt"_spr);
+        heightInput = geode::TextInput::create({45.f, 30}, "H", "GoogleSans.fnt"_spr);
+        heightInput->setFontScale(0.5f);
         heightInput->setPosition({240.f, 105.f});
         heightInput->setString(std::to_string(recorder.height));
         heightInput->setFilter("1234567890");
@@ -189,7 +192,8 @@ protected:
 
         createLabel("@", {267.f, 105.f}, 0.5f);
 
-        fpsInput = geode::TextInput::create(40.f, "FPS", "GoogleSans.fnt"_spr);
+        fpsInput = geode::TextInput::create({40.f, 30}, "FPS", "GoogleSans.fnt"_spr);
+        fpsInput->setFontScale(0.5f);
         fpsInput->setPosition({300.f, 105.f});
         fpsInput->setString(std::to_string(recorder.fps));
         fpsInput->setFilter("1234567890");
@@ -200,7 +204,8 @@ protected:
         menu->addChild(fpsInput);
 
         createLabel("Bitrate:", {30.f, 70.f});
-        bitrateInput = geode::TextInput::create(80.f, "e.g. 50M", "GoogleSans.fnt"_spr);
+        bitrateInput = geode::TextInput::create({80.f, 30}, "e.g. 50M", "GoogleSans.fnt"_spr);
+        bitrateInput->setFontScale(0.5f);
         bitrateInput->setPosition({200.f, 70.f});
         bitrateInput->setFilter("0123456789MKmk");
         bitrateInput->setString(recorder.bitrate);
@@ -409,7 +414,8 @@ protected:
     }
 
     geode::TextInput* createStyledInput(float width, const std::string& placeholder, const std::string& value, const std::string& filter, float x, float y, std::function<void(const std::string&)> cb) {
-        auto input = geode::TextInput::create(width, placeholder, "GoogleSans.fnt"_spr);
+        auto input = geode::TextInput::create({width, 30}, placeholder, "GoogleSans.fnt"_spr);
+        input->setFontScale(0.5f);
         if (auto* bg = input->getChildByType<geode::NineSlice>(0)) {
             bg->setColor({71, 71, 131});
             bg->setOpacity(255);
@@ -839,7 +845,8 @@ $execute {
         engineTab->addChild(tab->AddTextToToggle("Continue", continueToggle));
         
         // Replay Name Input
-        auto replayNameInput = geode::TextInput::create(220.f, "Replay Name", "GoogleSans.fnt"_spr);
+        auto replayNameInput = geode::TextInput::create({220.f, 30}, "Replay Name", "GoogleSans.fnt"_spr);
+        replayNameInput->setFontScale(0.5f);
         if (auto* bg = replayNameInput->getChildByType<geode::NineSlice>(0)) { 
             bg->setColor({71, 71, 131}); 
             bg->setOpacity(255); 

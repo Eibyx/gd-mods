@@ -176,7 +176,8 @@ void refreshVariablesTab(HacksTab* tab) {
     auto inputRow = CCMenu::create();
     inputRow->setContentSize({340.f, 30.f});
 
-    auto valueInput = geode::TextInput::create(200.f, "Value", "GoogleSans.fnt"_spr);
+    auto valueInput = geode::TextInput::create({200.f, 30}, "Value", "GoogleSans.fnt"_spr);
+    valueInput->setFontScale(0.5f);
     if (auto* bg = valueInput->getChildByType<geode::NineSlice>(0)) { 
         bg->setColor({71, 71, 131}); 
         bg->setOpacity(255); 

@@ -139,7 +139,8 @@ $execute {
                 ->setGap(6.f)
         );
 
-        auto input = TextInput::create(210.f, "Search hack...", "GoogleSans.fnt"_spr);
+        auto input = TextInput::create({210.f, 30}, "Search hack...", "GoogleSans.fnt"_spr);
+        input->setFontScale(0.5f);
         if (auto* bg = input->getChildByType<geode::NineSlice>(0)) {
             bg->setColor({71, 71, 131});
             bg->setOpacity(255);

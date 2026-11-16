@@ -65,7 +65,8 @@ private:
     auto addInput = [&](TextInput *&input, char const *placeholder,
                         std::string const &value, cocos2d::CCPoint pos,
                         int maxLength) {
-      input = TextInput::create(70, placeholder, "chatFont.fnt");
+      input = TextInput::create({70, 30}, placeholder, "chatFont.fnt");
+      input->setFontScale(0.5f);
       input->setPosition(pos);
       input->setString(value.c_str());
       input->setCallback([this](std::string const&) { textChanged(nullptr); });

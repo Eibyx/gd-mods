@@ -299,7 +299,8 @@ bool MacroTimelineLayer::setup() {
   frameBg->setPosition({inspectorCenterX - 2.f, row1});
   m_mainLayer->addChild(frameBg, 13);
 
-  frameInput = TextInput::create(66, "Frame", "chatFont.fnt");
+  frameInput = TextInput::create({66, 30}, "Frame", "chatFont.fnt");
+  frameInput->setFontScale(0.5f);
   frameInput->setPosition({inspectorCenterX - 2.f, row1});
   frameInput->setScale(0.55f);
   frameInput->setString("0");

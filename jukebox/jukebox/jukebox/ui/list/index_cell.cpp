@@ -84,8 +84,9 @@ bool IndexCell::init(
     buttonsMenu->setID("button-menu");
 
     auto* inputNode = TextInput::create(
-        size.width - (HORIZONTAL_PADDING * 2) - buttonsMenu->getContentWidth(), "Index url", "chatFont.fnt"
+        {size.width - (HORIZONTAL_PADDING * 2) - buttonsMenu->getContentWidth(), 30}, "Index url", "chatFont.fnt"
     );
+    inputNode->setFontScale(0.5f);
     inputNode->setScale(1.f);
     inputNode->setCommonFilter(CommonFilter::Any);
     inputNode->setMaxCharCount(300);

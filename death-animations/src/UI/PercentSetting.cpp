@@ -5,7 +5,8 @@
 void PercentSetting::init(float y) {
     BaseSetting::init(y);
 
-    m_input = TextInput::create(70, "%");
+    m_input = TextInput::create({70, 30}, "%");
+    m_input->setFontScale(0.5f);
     m_input->setPosition({96, 10});
     m_input->setScale(0.525f);
     m_input->setCommonFilter(CommonFilter::Uint);

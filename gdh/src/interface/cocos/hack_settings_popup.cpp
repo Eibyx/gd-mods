@@ -105,7 +105,8 @@ void HackSettingsPopup::addConfigIntInput(const std::string& labelText, const st
     auto& config = Config::get();
     prepareNewRow();
     
-    auto input = geode::TextInput::create(50.f, "Val", "GoogleSans.fnt"_spr);
+    auto input = geode::TextInput::create({50.f, 30}, "Val", "GoogleSans.fnt"_spr);
+    input->setFontScale(0.5f);
     if (auto* bg = input->getChildByType<geode::NineSlice>(0)) { 
         bg->setColor({71, 71, 131}); 
         bg->setOpacity(255); 
@@ -143,7 +144,8 @@ void HackSettingsPopup::addConfigFloatInput(const std::string& labelText, const 
     auto& config = Config::get();
     prepareNewRow();
     
-    auto input = geode::TextInput::create(50.f, "Val", "GoogleSans.fnt"_spr);
+    auto input = geode::TextInput::create({50.f, 30}, "Val", "GoogleSans.fnt"_spr);
+    input->setFontScale(0.5f);
     if (auto* bg = input->getChildByType<geode::NineSlice>(0)) { 
         bg->setColor({71, 71, 131}); 
         bg->setOpacity(255); 

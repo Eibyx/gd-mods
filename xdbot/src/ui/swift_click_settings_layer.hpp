@@ -37,7 +37,8 @@ private:
     lbl->setScale(0.35f);
     m_mainLayer->addChild(lbl);
 
-    countInput = TextInput::create(60, "Count", "chatFont.fnt");
+    countInput = TextInput::create({60, 30}, "Count", "chatFont.fnt");
+    countInput->setFontScale(0.5f);
     countInput->setPosition({m_size.width / 2, 88});
     countInput->setString(std::to_string(Mod::get()->getSavedValue<int64_t>(
                                              "swift_click_count", 2))
@@ -53,7 +54,8 @@ private:
     lbl->setScale(0.35f);
     m_mainLayer->addChild(lbl);
 
-    keyInput = TextInput::create(60, "Key", "chatFont.fnt");
+    keyInput = TextInput::create({60, 30}, "Key", "chatFont.fnt");
+    keyInput->setFontScale(0.5f);
     keyInput->setPosition({m_size.width / 2, 46});
     keyInput->setString(std::to_string(Mod::get()->getSavedValue<int64_t>(
                                            "swift_click_key", 72))

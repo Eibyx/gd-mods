@@ -185,7 +185,8 @@ protected:
         y -= 35.f;
 
         if (label.type == GDH::Labels::LabelType::Text) {
-            auto input = TextInput::create(240.f, "Text", "chatFont.fnt");
+            auto input = TextInput::create({240.f, 30}, "Text", "chatFont.fnt");
+            input->setFontScale(0.5f);
             if (auto* bg = input->getChildByType<geode::NineSlice>(0)) { 
                 bg->setColor({71, 71, 131}); 
                 bg->setOpacity(255); 
@@ -205,7 +206,8 @@ protected:
             sizeLabel->setPosition({35.f, y});
             menu->addChild(sizeLabel);
 
-            auto sizeInput = TextInput::create(50.f, "Size", "chatFont.fnt");
+            auto sizeInput = TextInput::create({50.f, 30}, "Size", "chatFont.fnt");
+            sizeInput->setFontScale(0.5f);
             if (auto* bg = sizeInput->getChildByType<geode::NineSlice>(0)) { 
                 bg->setColor({71, 71, 131}); 
                 bg->setOpacity(255); 
@@ -317,7 +319,8 @@ protected:
             spaceLabel->setPosition({60.f, y});
             menu->addChild(spaceLabel);
 
-            auto spaceInput = TextInput::create(80.f, "Px", "chatFont.fnt");
+            auto spaceInput = TextInput::create({80.f, 30}, "Px", "chatFont.fnt");
+            spaceInput->setFontScale(0.5f);
             if (auto* bg = spaceInput->getChildByType<geode::NineSlice>(0)) { 
                 bg->setColor({71, 71, 131}); 
                 bg->setOpacity(255); 
@@ -337,7 +340,8 @@ protected:
             sizeLabel->setPosition({45.f, y});
             menu->addChild(sizeLabel);
 
-            auto sizeInput = TextInput::create(50.f, "Px", "chatFont.fnt");
+            auto sizeInput = TextInput::create({50.f, 30}, "Px", "chatFont.fnt");
+            sizeInput->setFontScale(0.5f);
             if (auto* bg = sizeInput->getChildByType<geode::NineSlice>(0)) { 
                 bg->setColor({71, 71, 131}); 
                 bg->setOpacity(255); 
@@ -479,7 +483,8 @@ void refreshLabelsTab(HacksTab* tab) {
     auto lbl1 = geode::Label::create("Corner Pad:", "GoogleSans.fnt"_spr);
     padsMenu->addChild(lbl1);
 
-    auto input1 = TextInput::create(55.f, "Pad", "GoogleSans.fnt"_spr);
+    auto input1 = TextInput::create({55.f, 30}, "Pad", "GoogleSans.fnt"_spr);
+    input1->setFontScale(0.5f);
     input1->setString(fmt::format("{:.1f}", manager.cornerPadding));
     input1->setCallback([](const std::string& str) {
         if (auto val = geode::utils::numFromString<float>(str)) {
@@ -499,7 +504,8 @@ void refreshLabelsTab(HacksTab* tab) {
     auto lbl2 = geode::Label::create("Mid Pad:", "GoogleSans.fnt"_spr);
     padsMenu->addChild(lbl2);
 
-    auto input2 = TextInput::create(55.f, "Pad", "GoogleSans.fnt"_spr);
+    auto input2 = TextInput::create({55.f, 30}, "Pad", "GoogleSans.fnt"_spr);
+    input2->setFontScale(0.5f);
     input2->setString(fmt::format("{:.1f}", manager.midPadding));
     input2->setCallback([](const std::string& str) {
         if (auto val = geode::utils::numFromString<float>(str)) {

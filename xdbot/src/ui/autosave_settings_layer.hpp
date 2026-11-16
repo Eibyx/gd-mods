@@ -56,7 +56,8 @@ private:
 		intervalLbl2->setScale(0.22f);
 		m_mainLayer->addChild(intervalLbl2);
 
-		intervalInput = TextInput::create(50, "0", "bigFont.fnt");
+		intervalInput = TextInput::create({50, 30}, "0", "bigFont.fnt");
+		intervalInput->setFontScale(0.5f);
 		intervalInput->setPosition({169, 130});
 		intervalInput->setScale(0.675f);
 		intervalInput->setString(Mod::get()->getSavedValue<std::string>("autosave_interval").c_str());

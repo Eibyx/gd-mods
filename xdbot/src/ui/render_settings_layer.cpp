@@ -350,7 +350,8 @@ bool RenderSettingsLayer::setup() {
   if (usingApi)
     lbl->setOpacity(90);
 
-  fadeInInput = TextInput::create(50.f, "s", "bigFont.fnt");
+  fadeInInput = TextInput::create({50.f, 30}, "s", "bigFont.fnt");
+  fadeInInput->setFontScale(0.5f);
   fadeInInput->setScale(0.5f);
   fadeInInput->setPosition(ccp(100, -32));
   fadeInInput->setString(
@@ -421,7 +422,8 @@ bool RenderSettingsLayer::setup() {
   if (usingApi)
     lbl->setOpacity(90);
 
-  extensionInput = TextInput::create(46.f, "", "chatFont.fnt");
+  extensionInput = TextInput::create({46.f, 30}, "", "chatFont.fnt");
+  extensionInput->setFontScale(0.5f);
   extensionInput->setScale(0.8f);
   extensionInput->setPosition(ccp(209, -5));
   extensionInput->setString(
@@ -431,7 +433,8 @@ bool RenderSettingsLayer::setup() {
       "abcdefghijklmnñopqrstuvwxyz0123456789.");
   menu->addChild(extensionInput);
 
-  fadeOutInput = TextInput::create(50.f, "s", "bigFont.fnt");
+  fadeOutInput = TextInput::create({50.f, 30}, "s", "bigFont.fnt");
+  fadeOutInput->setFontScale(0.5f);
   fadeOutInput->setScale(0.5f);
   fadeOutInput->setPosition(ccp(100, -58));
   fadeOutInput->setString(

@@ -768,7 +768,8 @@ bool GradientLayer::init() {
 
     m_mainLayer->addChild(lbl);
 
-    m_rInput = TextInput::create(50, "R");
+    m_rInput = TextInput::create({50, 30}, "R");
+    m_rInput->setFontScale(0.5f);
     m_rInput->setScale(0.625f);
     m_rInput->setPosition({201, 100});
     m_rInput->setString("255");
@@ -777,7 +778,8 @@ bool GradientLayer::init() {
 
     m_mainLayer->addChild(m_rInput);
 
-    m_gInput = TextInput::create(50, "G");
+    m_gInput = TextInput::create({50, 30}, "G");
+    m_gInput->setFontScale(0.5f);
     m_gInput->setScale(0.625f);
     m_gInput->setPosition({201, 75});
     m_gInput->setString("255");
@@ -786,7 +788,8 @@ bool GradientLayer::init() {
 
     m_mainLayer->addChild(m_gInput);
 
-    m_bInput = TextInput::create(50, "B");
+    m_bInput = TextInput::create({50, 30}, "B");
+    m_bInput->setFontScale(0.5f);
     m_bInput->setScale(0.625f);
     m_bInput->setPosition({201, 50});
     m_bInput->setString("255");

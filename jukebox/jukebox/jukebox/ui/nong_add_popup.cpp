@@ -165,25 +165,29 @@ bool NongAddPopup::init(const int songID, const std::optional<Song*> replacedNon
 
     // <MAIN_METADATA>
 
-    TextInput* songInput = TextInput::create(inputWidth, "Song name*", "bigFont.fnt");
+    TextInput* songInput = TextInput::create({inputWidth, 30}, "Song name*", "bigFont.fnt");
+    songInput->setFontScale(0.5f);
     songInput->setID("song-name-input");
     songInput->setCommonFilter(CommonFilter::Any);
     setInputProps(songInput);
     m_songNameInput = songInput;
 
-    TextInput* artistInput = TextInput::create(inputWidth, "Artist name*", "bigFont.fnt");
+    TextInput* artistInput = TextInput::create({inputWidth, 30}, "Artist name*", "bigFont.fnt");
+    artistInput->setFontScale(0.5f);
     artistInput->setID("artist-name-input");
     artistInput->setCommonFilter(CommonFilter::Any);
     setInputProps(artistInput);
     m_artistNameInput = artistInput;
 
-    TextInput* levelNameInput = TextInput::create(inputWidth, "Level name", "bigFont.fnt");
+    TextInput* levelNameInput = TextInput::create({inputWidth, 30}, "Level name", "bigFont.fnt");
+    levelNameInput->setFontScale(0.5f);
     levelNameInput->setID("artist-name-input");
     levelNameInput->setCommonFilter(CommonFilter::Any);
     setInputProps(levelNameInput);
     m_levelNameInput = levelNameInput;
 
-    auto* startOffsetInput = TextInput::create(inputWidth, "Start offset (ms)", "bigFont.fnt");
+    auto* startOffsetInput = TextInput::create({inputWidth, 30}, "Start offset (ms)", "bigFont.fnt");
+    startOffsetInput->setFontScale(0.5f);
     startOffsetInput->setID("start-offset-input");
     startOffsetInput->setCommonFilter(CommonFilter::Int);
     setInputProps(startOffsetInput);
@@ -217,7 +221,8 @@ bool NongAddPopup::init(const int songID, const std::optional<Song*> replacedNon
             break;
     }
 
-    m_specialInput = TextInput::create(inputWidth, placeholder.c_str(), "bigFont.fnt");
+    m_specialInput = TextInput::create({inputWidth, 30}, placeholder.c_str(), "bigFont.fnt");
+    m_specialInput->setFontScale(0.5f);
     m_specialInput->setID("special-input");
     m_specialInput->setCommonFilter(CommonFilter::Any);
     setInputProps(m_specialInput);
