@@ -134,9 +134,3 @@ int PlayLayerUtils::getDecimalsToShow()
 
     return m_decimalPercentage ? 2 : 0;
 }
-
-void PlayLayerUtils::onModify(auto& self)
-{
-    (void)self.setHookPriorityPost("PlayLayer::addObject", Priority::First);
-    (void)self.setHookPriorityPost("PlayLayer::postUpdate", Priority::First);
-}

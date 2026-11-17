@@ -15,7 +15,12 @@ class $modify (BallGameManager, GameManager)
 
 class $modify (BallTouchDispatcher, CCTouchDispatcher)
 {
-    static void onModify(auto& self);
+    static void onModify(auto& self)
+    {
+        #ifdef GEODE_IS_MOBILE
+        (void)self.setHookPriorityPre("cocos2d::CCTouchDispatcher::touches", -8008135);
+        #endif
+    }
 
     void touches(CCSet *pTouches, CCEvent *pEvent, unsigned int uIndex);
 };
