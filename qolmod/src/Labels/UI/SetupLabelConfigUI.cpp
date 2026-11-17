@@ -140,7 +140,8 @@ void SetupLabelConfigUI::createPage1()
     offsetLine->setScaleY(0.9f / 0.5f);
     offsetLine->setScaleX(1.0f / 0.5f);
 
-    offsetXInp = TextInput::create(50, "X", "bigFont.fnt");
+    offsetXInp = TextInput::create({50, 30}, "X", "bigFont.fnt");
+    offsetXInp->setFontScale(0.5f);
     offsetXInp->setScale(0.7f / 0.5f);
     offsetXInp->setCommonFilter(CommonFilter::Float);
     offsetXInp->setCallback([this](const std::string& str)
@@ -148,7 +149,8 @@ void SetupLabelConfigUI::createPage1()
         currentConfig.offset.x = utils::numFromString<float>(str).unwrapOr(currentConfig.offset.x);
     });
 
-    offsetYInp = TextInput::create(50, "Y", "bigFont.fnt");
+    offsetYInp = TextInput::create({50, 30}, "Y", "bigFont.fnt");
+    offsetYInp->setFontScale(0.5f);
     offsetYInp->setScale(0.7f / 0.5f);
     offsetYInp->setCommonFilter(CommonFilter::Float);
     offsetYInp->setCallback([this](const std::string& str)
@@ -216,7 +218,8 @@ void SetupLabelConfigUI::createPage1()
     rotationLine->setRotation(90);
     rotationLine->setScaleY(0.9f);
 
-    nameInp = TextInput::create(145, "Display Name", "bigFont.fnt");
+    nameInp = TextInput::create({145, 30}, "Display Name", "bigFont.fnt");
+    nameInp->setFontScale(0.5f);
     nameInp->setScale(0.7f);
     nameInp->setCommonFilter(CommonFilter::Any);
     nameInp->setCallback([this](const std::string& str)
@@ -224,7 +227,8 @@ void SetupLabelConfigUI::createPage1()
         currentConfig.displayName = str;
     });
 
-    scaleInp = TextInput::create(145, "Scale", "bigFont.fnt");
+    scaleInp = TextInput::create({145, 30}, "Scale", "bigFont.fnt");
+    scaleInp->setFontScale(0.5f);
     scaleInp->setScale(0.7f);
     scaleInp->setCommonFilter(CommonFilter::Float);
     scaleInp->setCallback([this](const std::string& str)
@@ -232,7 +236,8 @@ void SetupLabelConfigUI::createPage1()
         currentConfig.scale = utils::numFromString<float>(str).unwrapOr(currentConfig.scale);
     });
 
-    opacityInp = TextInput::create(145, "Opacity", "bigFont.fnt");
+    opacityInp = TextInput::create({145, 30}, "Opacity", "bigFont.fnt");
+    opacityInp->setFontScale(0.5f);
     opacityInp->setScale(0.7f);
     opacityInp->setCommonFilter(CommonFilter::Float);
     opacityInp->setCallback([this](const std::string& str)
@@ -240,7 +245,8 @@ void SetupLabelConfigUI::createPage1()
         currentConfig.opacity = utils::numFromString<float>(str).unwrapOr(currentConfig.opacity);
     });
 
-    rotationInp = TextInput::create(145, "Rotation", "bigFont.fnt");
+    rotationInp = TextInput::create({145, 30}, "Rotation", "bigFont.fnt");
+    rotationInp->setFontScale(0.5f);
     rotationInp->setScale(0.7f);
     rotationInp->setCommonFilter(CommonFilter::Float);
     rotationInp->setCallback([this](const std::string& str)
@@ -294,7 +300,8 @@ void SetupLabelConfigUI::createPage2()
         auto info = qolmod::Button::create(helpSpr, this, menu_selector(SetupLabelConfigUI::onFormatHelp));
         pages[1]->addChildAtPosition(info, Anchor::TopRight, ccp(-16, -16));
 
-        formatInp = TextInput::create(450, "Format", "bigFont.fnt");
+        formatInp = TextInput::create({450, 30}, "Format", "bigFont.fnt");
+        formatInp->setFontScale(0.5f);
         formatInp->setAnchorPoint(ccp(0.5f, 0.5f));
         formatInp->setScale(0.7f);
         formatInp->setCommonFilter(CommonFilter::Any);
@@ -331,7 +338,8 @@ void SetupLabelConfigUI::createPage2()
         pages[1]->addChildAtPosition(btn1, Anchor::Bottom, btn1->getPosition());
         pages[1]->addChildAtPosition(btn2, Anchor::Bottom, btn2->getPosition());
 
-        formatInp = TextInput::create(450, "Format", "bigFont.fnt");
+        formatInp = TextInput::create({450, 30}, "Format", "bigFont.fnt");
+        formatInp->setFontScale(0.5f);
         formatInp->setVisible(false);
 
         pages[1]->addChildAtPosition(formatInp, Anchor::Center);

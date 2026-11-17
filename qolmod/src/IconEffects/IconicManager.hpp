@@ -28,7 +28,7 @@ class IconicManager
         void setSeperateColours(bool v);
 
         bool areIncompatibleModsLoaded();
-        std::vector<geode::Mod*> getIncompatibleMods();
+        const std::vector<geode::Mod*>& getIncompatibleMods();
         void handleIncompatibility(std::string id);
 
         bool isFineOutlineLoaded();

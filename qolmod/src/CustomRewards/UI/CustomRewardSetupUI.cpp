@@ -142,7 +142,8 @@ CCNode* CustomRewardSetupUI::createCreateInput(std::string id, std::string str)
     bg->setContentSize(node->getContentSize() / 0.5f);
     bg->setScale(0.5f);
 
-    auto input = TextInput::create(70, "Count");
+    auto input = TextInput::create({70, 30}, "Count");
+    input->setFontScale(0.5f);
     input->setCommonFilter(CommonFilter::Int);
     input->setAnchorPoint(ccp(1, 0.5f));
 

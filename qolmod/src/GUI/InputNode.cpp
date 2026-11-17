@@ -40,7 +40,7 @@ InputNode* InputNode::createMultiline(CCSize const& size, std::string placeholde
 
 bool InputNode::initWithWidth(float width, std::string placeholder, ZStringView font)
 {
-    return this->initWithSize({width, 0}, std::move(placeholder), font, false);
+    return this->initWithSize({width, 30}, std::move(placeholder), font, false);
 }
 
 bool InputNode::initWithSize(CCSize const& size, std::string placeholder, ZStringView font, bool multiline)

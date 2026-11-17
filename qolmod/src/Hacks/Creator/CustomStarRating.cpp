@@ -33,7 +33,8 @@ class $modify (ShareLevelLayer)
 
             m_difficultySprite->setVisible(false);
 
-            auto input = TextInput::create(90, "Stars");
+            auto input = TextInput::create({90, 30}, "Stars");
+            input->setFontScale(0.5f);
             input->setPosition(CCDirector::get()->getWinSize() / 2 + ccp(30, -25));
             input->setCommonFilter(CommonFilter::Int);
             input->setMaxCharCount(3);

@@ -22,7 +22,6 @@ AndroidBall* AndroidBall::get()
 
 bool AndroidBall::init()
 {
-    this->retain();
     this->onEnter();
     this->scheduleUpdate();
 

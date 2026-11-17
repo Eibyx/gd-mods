@@ -20,7 +20,6 @@ class $modify (LoadingLayer)
         LoadingLayer::loadAssets();
 
         auto font = LocalisationManager::get()->getAltFont();
-        auto lang = LocalisationManager::get()->getCurrentLang();
 
         if (!font.empty())
         {
@@ -33,8 +32,11 @@ class $modify (LoadingLayer)
                         if (auto lbl = typeinfo_cast<CCLabelBMFont*>(getChildByID("geode-small-label")))
                             lbl->setString("QOLMod: Loading language font");
 
-                        Loader::get()->queueInMainThread([this, font]
+                        Loader::get()->queueInMainThread([font]
                         {
+                            if (!CCScene::get())
+                                return;
+
                             auto lbl = AdvLabelBMFont::createWithString("boobs", font.c_str());
                             lbl->setScale(0);
                             lbl->setID("THIS_IS_REQUIRED_FOR_LANGUAGE_PRELOADING"_spr);

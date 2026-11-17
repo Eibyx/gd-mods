@@ -13,23 +13,44 @@ bool CBFCheckMenuLayer::init()
 
 void SpeedhackScheduler::update(float dt)
 {
-    Speedhack::get()->realDeltatime = dt;
+    // QOLMod's own logic must not run while the game is still loading, the
+    // scheduler is used by the loading screen itself
+    if (auto scene = CCScene::get(); scene && scene->getChildByType<LoadingLayer>(0))
+    {
+        CCScheduler::update(dt);
+        return;
+    }
+
+    auto* speedhack = Speedhack::get();
+    speedhack->realDeltatime = dt;
+
+    if (dt <= 0)
+    {
+        CCScheduler::update(dt);
+        return;
+    }
+
     ColourUtils::get()->update(dt);
     LabelManager::get()->update(dt);
 
-    float value = Speedhack::get()->getRealValue();
+    float value = speedhack->getRealValue();
 
     static float lastPitch = 0;
-    float pi = (Speedhack::get()->getMusicEnabled() && Speedhack::get()->gameplayOnlyCheck()) ? value : 1;
+    float pi = (speedhack->getMusicEnabled() && speedhack->gameplayOnlyCheck()) ? value : 1;
 
     if (lastPitch != pi)
     {
-        Speedhack::get()->getMasterChannel()->setPitch(pi);
+        // the master channel isn't available on every platform, without it the
+        // pitch can't be changed
+        if (auto* master = speedhack->getMasterChannel())
+        {
+            master->setPitch(pi);
 
-        lastPitch = pi;
+            lastPitch = pi;
+        }
     }
 
-    if (Speedhack::get()->getGameplayEnabled())
+    if (speedhack->getGameplayEnabled())
     {
         CCScheduler::update(dt);
         

@@ -20,7 +20,7 @@ namespace qolmod
 
             void addAntiCheatMod(geode::Mod* mod);
             void removeAntiCheatMod(geode::Mod* mod);
-            const std::vector<geode::Mod*> getAntiCheatMods();
+            const std::vector<geode::Mod*>& getAntiCheatMods();
             const bool isAntiCheatEnabled();
     };
 };

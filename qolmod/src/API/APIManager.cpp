@@ -24,7 +24,7 @@ void APIManager::removeAntiCheatMod(geode::Mod* mod)
     enabledAntiCheat = anticheatMods.size() != 0;
 }
 
-const std::vector<geode::Mod*> APIManager::getAntiCheatMods()
+const std::vector<geode::Mod*>& APIManager::getAntiCheatMods()
 {
     return anticheatMods;
 }

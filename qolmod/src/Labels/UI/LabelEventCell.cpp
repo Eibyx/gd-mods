@@ -84,9 +84,12 @@ bool LabelEventCell::init(CCSize size, LabelEvent config, SetupLabelConfigUI* ui
     sliderHold->setValueRanged(config.hold);
     sliderFadeOut->setValueRanged(config.fadeOut);
 
-    inputFadeIn = TextInput::create(50, "Time");
-    inputHold = TextInput::create(50, "Time");
-    inputFadeOut = TextInput::create(50, "Time");
+    inputFadeIn = TextInput::create({50, 30}, "Time");
+    inputFadeIn->setFontScale(0.5f);
+    inputHold = TextInput::create({50, 30}, "Time");
+    inputHold->setFontScale(0.5f);
+    inputFadeOut = TextInput::create({50, 30}, "Time");
+    inputFadeOut->setFontScale(0.5f);
 
     inputFadeIn->setCommonFilter(CommonFilter::Float);
     inputHold->setCommonFilter(CommonFilter::Float);
