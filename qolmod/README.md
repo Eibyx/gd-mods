@@ -9,7 +9,6 @@ If you have any issues with the mod, you can join our [Discord server](https://d
 
 # How to use
 
-- On Windows and Mac, press **Tab** on your keyboard.
 - On Android, press the button on your screen to open the mod menu.
 
 # Credits

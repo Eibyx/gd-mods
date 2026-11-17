@@ -1,5 +1,8 @@
 # 3.0.0
 
+- Ported to **Geode 6.0.0-alpha.2** and **Geometry Dash 2.2091** for **Android**
+- Fixed the game getting stuck on the loading screen
+- Fixed the speedhack crashing while changing the music pitch
 - Improved **Floating Shortcuts**
 -- Better Performance
 -- Better Customization
