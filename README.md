@@ -1,6 +1,6 @@
 # Geometry Dash 2.2091 Mods
 
-Mods ported to **Geode 6.0.0-alpha.2** for **GD 2.2091**.
+Mods ported to **Geode 6.0.0-alpha.3** for **GD 2.2091**.
 
 I'm too tired of waiting for the geode devs 💔
 

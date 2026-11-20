@@ -25,7 +25,7 @@ jobs:
       - name: Build Icon Gradients
         uses: geode-sdk/build-geode-mod@main
         with:
-          sdk: "latest"
+          sdk: "given"
           bindings: "geode-sdk/bindings"
           bindings-ref: "main"
           path: icon-gradients

@@ -46,7 +46,7 @@ jobs:
       - name: Build FFmpeg API
         uses: geode-sdk/build-geode-mod@main
         with:
-          sdk: "latest"
+          sdk: "given"
           bindings: "geode-sdk/bindings"
           bindings-ref: "main"
           path: ffmpeg-api

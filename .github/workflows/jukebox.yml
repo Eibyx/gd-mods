@@ -27,7 +27,7 @@ jobs:
       - name: Build Jukebox
         uses: geode-sdk/build-geode-mod@main
         with:
-          sdk: "latest"
+          sdk: "given"
           bindings: "geode-sdk/bindings"
           bindings-ref: "main"
           path: jukebox
