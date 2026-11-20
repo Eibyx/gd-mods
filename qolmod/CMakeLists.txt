@@ -46,11 +46,7 @@ include_directories(include src/Client src/Hacks/Speedhack src/Utils src/Notific
 
 # CPMAddPackage("gh:TheSillyDoggo/gd-imgui-cocos#2d33a3d") # should be geode
 
-CPMAddPackage(
-    NAME rift
-    GIT_REPOSITORY https://git.eclipse.menu/EclipseMenu/RIFT
-    GIT_TAG v1
-)
+add_subdirectory(libs/rift)
 
 CPMAddPackage("gh:rapidfuzz/rapidfuzz-cpp#main")
 CPMAddPackage("gh:maxnut/GDReplayFormat#72078e5")
