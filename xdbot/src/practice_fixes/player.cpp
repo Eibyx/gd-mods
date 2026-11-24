@@ -198,9 +198,8 @@ PlayerData PlayerPracticeFixes::saveData(PlayerObject* player) {
     data.m_unk838 = player->m_unk838;
     data.m_stateOnGround = player->m_stateOnGround;
     data.m_stateUnk = player->m_stateUnk;
-    data.m_stateNoStickX = player->m_stateNoStickX;
-    data.m_stateNoStickY = player->m_stateNoStickY;
-    data.m_stateUnk2 = player->m_stateUnk2;
+    // m_stateNoStickX/Y and m_stateUnk2 do not exist in 2.2091 (removed from
+    // geode-sdk/bindings in ec526620 as impostor members).
     data.m_stateBoostX = player->m_stateBoostX;
     data.m_stateBoostY = player->m_stateBoostY;
     data.m_maybeStateForce2 = player->m_maybeStateForce2;
@@ -445,9 +444,6 @@ void PlayerPracticeFixes::applyData(PlayerObject* player, PlayerData data, bool 
     player->m_unk838 = data.m_unk838;
     player->m_stateOnGround = data.m_stateOnGround;
     player->m_stateUnk = data.m_stateUnk;
-    player->m_stateNoStickX = data.m_stateNoStickX;
-    player->m_stateNoStickY = data.m_stateNoStickY;
-    player->m_stateUnk2 = data.m_stateUnk2;
     player->m_stateBoostX = data.m_stateBoostX;
     player->m_stateBoostY = data.m_stateBoostY;
     player->m_maybeStateForce2 = data.m_maybeStateForce2;

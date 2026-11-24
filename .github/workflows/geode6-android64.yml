@@ -59,6 +59,14 @@ jobs:
           git clone --depth 1 "$FFMPEG_MAKER_REPO" maker
           cd maker
           git checkout -q ${{ steps.maker.outputs.sha }} || true
+          # chromium.googlesource.com +archive downloads are rate-limited from
+          # CI runners (empty tarball -> "./configure: No such file"). Take
+          # libvpx from its GitHub mirror at the same tag instead.
+          VPX_VERSION=$(sed -n 's/^VPX_VERSION=//p' scripts/libvpx/download.sh)
+          printf '%s\n' '#!/usr/bin/env bash' \
+            "VPX_VERSION=${VPX_VERSION}" \
+            'if [[ ! -f "${VPX_VERSION}/configure" ]]; then rm -rf "${VPX_VERSION}"; git clone -q --depth 1 -b "${VPX_VERSION}" https://github.com/webmproject/libvpx "${VPX_VERSION}"; fi' \
+            'export SOURCES_DIR_libvpx=$(pwd)/${VPX_VERSION}' > scripts/libvpx/download.sh
           export ANDROID_SDK_HOME=/usr/local/lib/android/sdk
           export ANDROID_NDK_HOME=/usr/local/lib/android/sdk/ndk/$NDK_VERSION
           test -d "$ANDROID_NDK_HOME" || { echo "NDK $NDK_VERSION missing on runner"; ls /usr/local/lib/android/sdk/ndk; exit 1; }
@@ -114,6 +122,8 @@ jobs:
           target: Android64
           build-config: Release
           android-min-sdk: ${{ matrix.min-sdk }}
+          # keep going after the first failing file so one run shows every error
+          build-args: "-- -k 0"
 
       - name: Inspect the .geode
         run: |
