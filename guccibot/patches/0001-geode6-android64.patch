@@ -1,8 +1,8 @@
 diff --git a/CMakeLists.txt b/CMakeLists.txt
-index 59f47c0..f0cc885 100644
+index 59f47c0..c003a2d 100644
 --- a/CMakeLists.txt
 +++ b/CMakeLists.txt
-@@ -52,13 +52,21 @@ if(GB_GEODE_MAJOR GREATER_EQUAL 6)
+@@ -52,19 +52,27 @@ if(GB_GEODE_MAJOR GREATER_EQUAL 6)
      # Geode 6 builds only Windows so far: iOS's 2.2091 bindings miss 42 of
      # GucciBot's hooks, and the phone ImGui patches aren't redone for the
      # newer gd-imgui-cocos yet (docs/PORT_2209_ASSESSMENT.md).
@@ -27,6 +27,13 @@ index 59f47c0..f0cc885 100644
      # Its codegen keeps a renamed member's old name as a union with the new
      # one, and a union holding a CCPoint can't be copied, so GJGameState
      # couldn't be either (practice checkpoints and the path preview copy it).
+     # The patch keeps old names only for scalars and pointers; same layout.
+     set(GB_BINDINGS_PATCH PATCH_COMMAND ${CMAKE_COMMAND}
+-        "-DPATCH=${CMAKE_CURRENT_SOURCE_DIR}/patches/bindings-g6-copyable-renames.patch"
++        "-DPATCH=${CMAKE_CURRENT_SOURCE_DIR}/patches/bindings-g6-union-renames.patch"
+         -P "${CMAKE_CURRENT_SOURCE_DIR}/patches/apply_once.cmake")
+ else()
+     set(GB_GEODE6 OFF)
 @@ -98,7 +106,16 @@ set(IMGUI_VERSION "v1.91.4" CACHE STRING "Pin imgui version" FORCE)
  # imgui-cocos-frame-scale.patch lets ImGui lay out a display smaller than the
  # GL frame and scales its drawing and touches to match (src/ui/look.cpp sets
@@ -45,7 +52,18 @@ index 59f47c0..f0cc885 100644
      # The first gd-imgui-cocos for Geode 6 and GD 2.2091 (2026-11-03).
      CPMAddPackage("gh:matcool/gd-imgui-cocos#934958c68b1f050a8976d893584fa71368c1df1f")
  elseif (CMAKE_SYSTEM_NAME STREQUAL "iOS")
-@@ -203,9 +220,31 @@ if(GB_GEODE6)
+@@ -193,6 +210,10 @@ endif()
+ if(MSVC)
+     target_compile_options(${PROJECT_NAME} PRIVATE /bigobj /utf-8 /wd4201)
+ endif()
++if(ANDROID)
++    # Eibyx/gd-mods port: report every error of a file in one CI run.
++    target_compile_options(${PROJECT_NAME} PRIVATE -ferror-limit=0)
++endif()
+ 
+ if(GB_GEODE6)
+     # Geode checks mod.json's "geode" and "gd" against the SDK, so the Geode 6
+@@ -203,9 +224,31 @@ if(GB_GEODE6)
      # the Geode 5 one. setup_geode_mod reads mod.json from
      # CMAKE_CURRENT_SOURCE_DIR, so that points at the copy for the one call.
      set(GB_MOD_ROOT "${CMAKE_BINARY_DIR}/mod-geode6")
@@ -78,7 +96,7 @@ index 59f47c0..f0cc885 100644
      string(JSON GB_RES_COUNT LENGTH "${GB_MOD_JSON}" resources files)
      math(EXPR GB_RES_LAST "${GB_RES_COUNT} - 1")
      foreach(i RANGE ${GB_RES_LAST})
-@@ -228,7 +267,7 @@ if(GB_GEODE6)
+@@ -228,7 +271,7 @@ if(GB_GEODE6)
      file(READ "${CMAKE_CURRENT_SOURCE_DIR}/about.md" GB_ABOUT)
      string(REPLACE
          "- Geometry Dash 2.2081 on Windows, macOS, iOS or Android, Geode 5.10.1+ (macOS, iOS and Android are experimental: see Platforms)"
@@ -87,7 +105,7 @@ index 59f47c0..f0cc885 100644
          GB_ABOUT "${GB_ABOUT}")
      string(REPLACE
          "- Silicate's full physics engine — exact GD 2.2081 offsets, proper TPS bypass,"
-@@ -239,7 +278,7 @@ if(GB_GEODE6)
+@@ -239,7 +282,7 @@ if(GB_GEODE6)
      # again below.)
      set(GB_ABOUT "\n${GB_ABOUT}")
      string(REGEX REPLACE "\n- Geometry Dash 2[.]2081[^\n]*"
@@ -96,6 +114,72 @@ index 59f47c0..f0cc885 100644
          GB_ABOUT "${GB_ABOUT}")
      string(SUBSTRING "${GB_ABOUT}" 1 -1 GB_ABOUT)
      # Anything else that still names 2.2081: the version number is swapped and
+diff --git a/patches/bindings-g6-union-renames.patch b/patches/bindings-g6-union-renames.patch
+new file mode 100644
+index 0000000..c1320df
+--- /dev/null
++++ b/patches/bindings-g6-union-renames.patch
+@@ -0,0 +1,60 @@
++diff --git a/codegen/src/BindingGen.cpp b/codegen/src/BindingGen.cpp
++index 8924139a..af986233 100644
++--- a/codegen/src/BindingGen.cpp
+++++ b/codegen/src/BindingGen.cpp
++@@ -2,6 +2,24 @@
++ #include <iostream>
++ #include <set>
++ 
+++// GucciBot patch (patches/bindings-g6-union-renames.patch), Eibyx/gd-mods
+++// port for Geode 6.0.0: since 23aa2a93 an old name kept by renamed_from is a
+++// __declspec(property). A property can't be used in offsetof/sizeof(T::m) and
+++// its getter isn't const, and GucciBot does both (world/offsets.hpp,
+++// ac/framewindow.cpp, world/capture.cpp). For plain scalars and pointers the
+++// old names are a union with the new one again, as before 23aa2a93 (same
+++// layout, still copyable). Class types keep the upstream property aliases.
+++static bool gbAliasCopies(std::string const& t) {
+++    if (!t.empty() && t.back() == '*') return true;
+++    static std::set<std::string> const k = {
+++        "bool", "char", "short", "int", "long", "float", "double",
+++        "unsigned", "unsigned int", "unsigned char", "unsigned short", "unsigned long",
+++        "long long", "unsigned long long", "int8_t", "int16_t", "int32_t", "int64_t",
+++        "uint8_t", "uint16_t", "uint32_t", "uint64_t", "size_t", "intptr_t", "uintptr_t",
+++    };
+++    return k.count(t) > 0;
+++}
+++
++ namespace { namespace format_strings {
++     // requires: base_classes, class_name
++     constexpr char const* binding_include = R"GEN(#include "{base_directory}/{file_name}"
++@@ -69,6 +87,11 @@ public:
++     constexpr char const* renamed_member_definition = R"GEN({private}    {type} {member_name};
++     GEODE_DEFINE_ALIAS_HELPERS({member_name});
++ {renamed_members}{public}
+++)GEN";
+++
+++    constexpr char const* gb_union_member_definition = R"GEN({private}    union {{
+++        {type} {member_name}{{}};
+++{renamed_members}    }};{public}
++ )GEN";
++ 
++     constexpr char const* pad_definition = R"GEN(    GEODE_PAD({hardcode});
++@@ -326,6 +349,18 @@ std::string generateBindingHeader(Root const& root, std::filesystem::path const&
++                             fmt::arg("type", m->type.name),
++                             fmt::arg("member_name", m->name + str_if(fmt::format("[{}]", m->count), m->count))
++                         );
+++                    } else if (gbAliasCopies(m->type.name) && !m->count) {
+++                        std::string renamed_members;
+++                        for (auto& renamed : m->attributes.renamed_from) {
+++                            renamed_members += fmt::format("        {} {};\n", m->type.name, renamed);
+++                        }
+++                        single_output += fmt::format(format_strings::gb_union_member_definition,
+++                            fmt::arg("private", unimplementedField ? "private:\n" : ""),
+++                            fmt::arg("public", unimplementedField ? "\npublic:" : ""),
+++                            fmt::arg("type", m->type.name),
+++                            fmt::arg("member_name", m->name),
+++                            fmt::arg("renamed_members", renamed_members)
+++                        );
++                     } else {
++                         std::string renamed_members;
++                         for (auto& renamed : m->attributes.renamed_from) {
 diff --git a/patches/imgui-cocos-frame-scale-g6.patch b/patches/imgui-cocos-frame-scale-g6.patch
 new file mode 100644
 index 0000000..20d61cb
@@ -165,3 +249,44 @@ index 0000000..20d61cb
 + 	if (director->getDeltaTime() > 0.f) {
 + 		io.DeltaTime = director->getDeltaTime();
 + 	} else {
+diff --git a/src/core/checkpoint_player.cpp b/src/core/checkpoint_player.cpp
+index ab98cee..bc695f6 100644
+--- a/src/core/checkpoint_player.cpp
++++ b/src/core/checkpoint_player.cpp
+@@ -211,9 +211,7 @@ namespace gucci {
+         p->m_unk838 = m_unk838;
+         p->m_stateOnGround = m_stateOnGround;
+         p->m_stateUnk = m_stateUnk;
+-        p->m_stateNoStickX = m_stateNoStickX;
+-        p->m_stateNoStickY = m_stateNoStickY;
+-        p->m_stateUnk2 = m_stateUnk2;
++        // m_stateNoStickX/Y, m_stateUnk2: not in GD 2.2091 (geode-sdk/bindings ec526620).
+         p->m_stateBoostX = m_stateBoostX;
+         p->m_stateBoostY = m_stateBoostY;
+         p->m_maybeStateForce2 = m_maybeStateForce2;
+@@ -471,9 +469,7 @@ namespace gucci {
+         c.m_unk838 = p->m_unk838;
+         c.m_stateOnGround = p->m_stateOnGround;
+         c.m_stateUnk = p->m_stateUnk;
+-        c.m_stateNoStickX = p->m_stateNoStickX;
+-        c.m_stateNoStickY = p->m_stateNoStickY;
+-        c.m_stateUnk2 = p->m_stateUnk2;
++        // m_stateNoStickX/Y, m_stateUnk2: not in GD 2.2091 (geode-sdk/bindings ec526620).
+         c.m_stateBoostX = p->m_stateBoostX;
+         c.m_stateBoostY = p->m_stateBoostY;
+         c.m_maybeStateForce2 = p->m_maybeStateForce2;
+diff --git a/src/hooks/hook_playlayer.cpp b/src/hooks/hook_playlayer.cpp
+index b04114d..1ee4d63 100644
+--- a/src/hooks/hook_playlayer.cpp
++++ b/src/hooks/hook_playlayer.cpp
+@@ -1483,7 +1483,9 @@ class $modify(GBPortableCheckpoint, PlayLayer) {
+ // hook: the bindings mark it inline there (RobTop's new keybind system took
+ // its job, docs/PORT_2209_ASSESSMENT.md). Until the restart key's new home is
+ // found, that build doesn't keep the held touch through the restart key.
+-#if !(GB_GEODE6 && defined(GEODE_IS_WINDOWS))
++// Eibyx/gd-mods port: the Android 2.2091 bindings mark it inline as well, so
++// every Geode 6 build leaves this hook out (Android: hardware keyboards only).
++#if !GB_GEODE6
+ class $modify(GBPortableRestartHold, UILayer) {
+     void handleKeypress(cocos2d::enumKeyCodes key, bool down, double timestamp) {
+         auto& h = s_restartKeyHold;
