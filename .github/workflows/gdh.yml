@@ -1,10 +1,8 @@
 name: Build GDH
 
 on:
+  # Legacy Geode 6 alpha/beta build. Manual only; the stable build is geode6-android64.yml.
   workflow_dispatch:
-  push:
-    branches: [ "main" ]
-    tags: [ "gdh-v*" ]
 
 jobs:
   build:

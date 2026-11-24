@@ -1,0 +1,171 @@
+name: Geode 6.0.0 · Android64
+
+# Builds QOLMod, FFmpeg API and xdBot for Geometry Dash 2.2091 on the stable
+# Geode 6.0.0 SDK, arm64-v8a only. Every mod produces its own .geode file.
+#
+# Publishing: run this workflow manually with "publish" ticked, or push a tag
+# named geode6-<anything>. Each mod gets its own GitHub Release.
+
+on:
+  workflow_dispatch:
+    inputs:
+      publish:
+        description: "Publish the .geode files as GitHub Releases"
+        type: boolean
+        default: false
+  push:
+    branches: [ "main", "geode6/**" ]
+    tags: [ "geode6-*" ]
+    paths:
+      - "qolmod/**"
+      - "ffmpeg-api/**"
+      - "xdbot/**"
+      - ".github/workflows/geode6-android64.yml"
+
+env:
+  # Bindings pinned to the commit on geode-sdk/bindings main right after the
+  # Geode v6.0.0 release (2026-11-24). Move it deliberately, never "main":
+  # bindings main moves several times a day and can break layouts.
+  BINDINGS_REF: 94cead78f3799c64e7a30c24c9f2861c6d60d3be
+  # The NDK build-geode-mod itself uses on ubuntu-latest; FFmpeg must be built
+  # with the same one so the static libraries link cleanly.
+  NDK_VERSION: 29.0.14206865
+  FFMPEG_MAKER_REPO: https://github.com/ccchanged/ffmpeg-android-maker.git
+
+jobs:
+  ffmpeg-libs:
+    name: FFmpeg static libs (arm64-v8a)
+    runs-on: ubuntu-latest
+    outputs:
+      maker-sha: ${{ steps.maker.outputs.sha }}
+    steps:
+      - name: Resolve ffmpeg-android-maker commit
+        id: maker
+        run: echo "sha=$(git ls-remote $FFMPEG_MAKER_REPO HEAD | cut -f1)" >> "$GITHUB_OUTPUT"
+
+      - name: Cache FFmpeg build
+        id: cache
+        uses: actions/cache@v4
+        with:
+          path: ffmpeg-libs
+          key: ffmpeg-arm64-v8a-ndk${{ env.NDK_VERSION }}-${{ steps.maker.outputs.sha }}
+
+      - name: Build FFmpeg (aom, vpx, x264, x265)
+        if: steps.cache.outputs.cache-hit != 'true'
+        run: |
+          set -euo pipefail
+          sudo apt-get update -qq
+          sudo apt-get install -y -qq make pkg-config nasm meson ninja-build git curl wget p7zip-full python3 > /dev/null
+          git clone --depth 1 "$FFMPEG_MAKER_REPO" maker
+          cd maker
+          git checkout -q ${{ steps.maker.outputs.sha }} || true
+          export ANDROID_SDK_HOME=/usr/local/lib/android/sdk
+          export ANDROID_NDK_HOME=/usr/local/lib/android/sdk/ndk/$NDK_VERSION
+          test -d "$ANDROID_NDK_HOME" || { echo "NDK $NDK_VERSION missing on runner"; ls /usr/local/lib/android/sdk/ndk; exit 1; }
+          export CMAKE_POLICY_VERSION_MINIMUM=3.5
+          ./ffmpeg-android-maker.sh --enable-libaom --enable-libvpx --enable-libx264 --enable-libx265 \
+            --android-api-level=24 --target-abis=arm64-v8a
+          mkdir -p ../ffmpeg-libs
+          cp output/lib/arm64-v8a/*.a ../ffmpeg-libs/
+          ls -la ../ffmpeg-libs
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: ffmpeg-static-arm64-v8a
+          path: ffmpeg-libs/*.a
+          retention-days: 3
+
+  build:
+    name: ${{ matrix.mod }}
+    # Only FFmpeg API waits for the FFmpeg libraries; the "always()" lets
+    # QOLMod and xdBot build even when that job is slow or fails.
+    needs: ffmpeg-libs
+    if: always()
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        mod: [ qolmod, ffmpeg-api, xdbot ]
+        include:
+          - mod: qolmod
+            min-sdk: 23
+          - mod: ffmpeg-api
+            min-sdk: 24
+          - mod: xdbot
+            min-sdk: 23
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Fetch FFmpeg static libs
+        if: matrix.mod == 'ffmpeg-api'
+        uses: actions/download-artifact@v4
+        with:
+          name: ffmpeg-static-arm64-v8a
+          path: ffmpeg-api/lib/arm64-v8a
+
+      - name: Build ${{ matrix.mod }}
+        id: build
+        uses: geode-sdk/build-geode-mod@dce36b35e1c3d9d8af92347760b12eba3caf4004
+        with:
+          sdk: given
+          bindings: geode-sdk/bindings
+          bindings-ref: ${{ env.BINDINGS_REF }}
+          path: ${{ matrix.mod }}
+          target: Android64
+          build-config: Release
+          android-min-sdk: ${{ matrix.min-sdk }}
+
+      - name: Inspect the .geode
+        run: |
+          set -euo pipefail
+          f=$(ls ${{ steps.build.outputs.build-output }}/*.geode | head -1)
+          echo "file: $f"
+          unzip -l "$f"
+          tmp=$(mktemp -d); unzip -q "$f" -d "$tmp"
+          so=$(find "$tmp" -name '*.android64.so' | head -1)
+          test -n "$so" || { echo "no android64 .so in the package"; exit 1; }
+          file "$so"
+          # Page alignment of the LOAD segments (16 KB is what Android 15+ devices with 16 KB pages need).
+          readelf -lW "$so" | awk '/LOAD/{print "LOAD align", $NF}'
+          python3 -c "import json,sys;d=json.load(open('$tmp/mod.json'));print('geode',d['geode'],'gd',d['gd'],'version',d['version'])"
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: ${{ matrix.mod }}-android64
+          path: ${{ steps.build.outputs.build-output }}/*.geode
+
+  release:
+    name: Publish releases
+    needs: build
+    if: startsWith(github.ref, 'refs/tags/geode6-') || (github.event_name == 'workflow_dispatch' && inputs.publish)
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    strategy:
+      max-parallel: 1
+      matrix:
+        mod: [ ffmpeg-api, qolmod, xdbot ]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/download-artifact@v4
+        with:
+          name: ${{ matrix.mod }}-android64
+          path: out
+      - name: Create or update release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          ver=$(jq -r .version ${{ matrix.mod }}/mod.json)
+          id=$(jq -r .id ${{ matrix.mod }}/mod.json)
+          name=$(jq -r .name ${{ matrix.mod }}/mod.json)
+          tag="${{ matrix.mod }}-${ver}-geode6.0.0-android64"
+          notes="**${name}** ${ver} (\`${id}\`) for Geometry Dash 2.2091, Geode 6.0.0, Android arm64-v8a only.
+
+          Built by CI from ${GITHUB_SHA::7} against geode-sdk/bindings ${BINDINGS_REF::8}.
+          See COMPATIBILITY.md for what was verified on a device and what was not."
+          if gh release view "$tag" >/dev/null 2>&1; then
+            gh release upload "$tag" out/*.geode --clobber
+          else
+            gh release create "$tag" out/*.geode --title "${name} ${ver} · Geode 6.0.0 · Android64" --notes "$notes" --target "$GITHUB_SHA"
+          fi
