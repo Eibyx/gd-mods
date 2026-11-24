@@ -50,6 +50,13 @@ jobs:
           path: ffmpeg-libs
           key: ffmpeg-arm64-v8a-ndk${{ env.NDK_VERSION }}-${{ steps.maker.outputs.sha }}
 
+      # x265 sets CMake policies to OLD, which CMake 4 (the runner's) refuses.
+      - name: Set up CMake 3.31
+        if: steps.cache.outputs.cache-hit != 'true'
+        uses: jwlawson/actions-setup-cmake@v2
+        with:
+          cmake-version: "3.31.x"
+
       - name: Build FFmpeg (aom, vpx, x264, x265)
         if: steps.cache.outputs.cache-hit != 'true'
         run: |
@@ -123,7 +130,7 @@ jobs:
           build-config: Release
           android-min-sdk: ${{ matrix.min-sdk }}
           # keep going after the first failing file so one run shows every error
-          build-args: "-- -k 0"
+          configure-args: "-DCMAKE_MAKE_PROGRAM=${{ github.workspace }}/ci/ninja-k0"
 
       - name: Inspect the .geode
         run: |

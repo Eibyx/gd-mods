@@ -59,7 +59,7 @@ jobs:
           path: guccibot-src
           target: Android64
           build-config: Release
-          build-args: "-- -k 0"
+          configure-args: "-DCMAKE_MAKE_PROGRAM=${{ github.workspace }}/port/ci/ninja-k0"
 
       - name: Inspect the .geode
         run: |

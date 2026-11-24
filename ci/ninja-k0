@@ -1,0 +1,10 @@
+#!/usr/bin/env bash
+# CMAKE_MAKE_PROGRAM wrapper: run the real ninja with -k 0 so one CI run
+# reports every failing file instead of stopping at the first one.
+self="$(readlink -f "$0")"
+IFS=: read -ra dirs <<< "$PATH"
+for d in "${dirs[@]}"; do
+  c="$d/ninja"
+  if [[ -x "$c" && "$(readlink -f "$c")" != "$self" ]]; then exec "$c" -k 0 "$@"; fi
+done
+echo "ninja-k0: no real ninja on PATH" >&2; exit 127
