@@ -1,0 +1,167 @@
+diff --git a/CMakeLists.txt b/CMakeLists.txt
+index 59f47c0..f0cc885 100644
+--- a/CMakeLists.txt
++++ b/CMakeLists.txt
+@@ -52,13 +52,21 @@ if(GB_GEODE_MAJOR GREATER_EQUAL 6)
+     # Geode 6 builds only Windows so far: iOS's 2.2091 bindings miss 42 of
+     # GucciBot's hooks, and the phone ImGui patches aren't redone for the
+     # newer gd-imgui-cocos yet (docs/PORT_2209_ASSESSMENT.md).
+-    if(NOT WIN32)
+-        message(FATAL_ERROR "GucciBot's Geode 6 (GD 2.2091) build is Windows only for now")
++    # Eibyx/gd-mods port: Android64 (arm64-v8a) is enabled as well. It runs
++    # the same portable engine the Windows Geode 6 build already uses
++    # (GB_NATIVE_ENGINE 0, src/core/platform.hpp). macOS, iOS and Android32
++    # stay off: they were never built or tested on 2.2091.
++    if(NOT WIN32 AND NOT (ANDROID AND ANDROID_ABI STREQUAL "arm64-v8a"))
++        message(FATAL_ERROR "GucciBot's Geode 6 (GD 2.2091) build is Windows or Android64 only")
+     endif()
+     # The bindings commit Geode 6.0.0-beta.1 came out with: the last on main
+     # before its release (2026-11-20 23:03 UTC). It was alpha.2's 7a670e9
+     # until then; Geode's beta loader refuses a mod built for an alpha.
+-    set(GB_BINDINGS_COMMIT 78d5bb4eb0732dd636ae16d4dcf6e5ce84ec1221)
++    # Eibyx/gd-mods port: moved to the bindings of Geode 6.0.0 stable
++    # (geode-sdk/bindings main right after the release, 2026-11-24). It has
++    # the PlayerObject/virtual-order fixes Android needs; the copyable-renames
++    # patch still applies to it.
++    set(GB_BINDINGS_COMMIT 94cead78f3799c64e7a30c24c9f2861c6d60d3be)
+     # Its codegen keeps a renamed member's old name as a union with the new
+     # one, and a union holding a CCPoint can't be copied, so GJGameState
+     # couldn't be either (practice checkpoints and the path preview copy it).
+@@ -98,7 +106,16 @@ set(IMGUI_VERSION "v1.91.4" CACHE STRING "Pin imgui version" FORCE)
+ # imgui-cocos-frame-scale.patch lets ImGui lay out a display smaller than the
+ # GL frame and scales its drawing and touches to match (src/ui/look.cpp sets
+ # the scale). Android and iOS only; Windows and macOS fetch it as before.
+-if (GB_GEODE6)
++if (GB_GEODE6 AND ANDROID)
++    # Eibyx/gd-mods port: the phone frame-scale patch redone for this
++    # gd-imgui-cocos (setFrameScale moved past runPreDrawCall in the header).
++    CPMAddPackage(
++        NAME gd-imgui-cocos
++        GITHUB_REPOSITORY matcool/gd-imgui-cocos
++        GIT_TAG 934958c68b1f050a8976d893584fa71368c1df1f
++        PATCHES "${CMAKE_CURRENT_SOURCE_DIR}/patches/imgui-cocos-frame-scale-g6.patch"
++    )
++elseif (GB_GEODE6)
+     # The first gd-imgui-cocos for Geode 6 and GD 2.2091 (2026-11-03).
+     CPMAddPackage("gh:matcool/gd-imgui-cocos#934958c68b1f050a8976d893584fa71368c1df1f")
+ elseif (CMAKE_SYSTEM_NAME STREQUAL "iOS")
+@@ -203,9 +220,31 @@ if(GB_GEODE6)
+     # the Geode 5 one. setup_geode_mod reads mod.json from
+     # CMAKE_CURRENT_SOURCE_DIR, so that points at the copy for the one call.
+     set(GB_MOD_ROOT "${CMAKE_BINARY_DIR}/mod-geode6")
++    if(ANDROID)
++        set(GB_PLATFORM_NAME "Android (arm64-v8a)")
++    else()
++        set(GB_PLATFORM_NAME "Windows")
++    endif()
+     file(READ "${CMAKE_CURRENT_SOURCE_DIR}/mod.json" GB_MOD_JSON)
+     string(JSON GB_MOD_JSON SET "${GB_MOD_JSON}" geode "\"${GEODE_VERSION_FULL}\"")
+-    string(JSON GB_MOD_JSON SET "${GB_MOD_JSON}" gd "{\"win\": \"${GEODE_GD_VERSION}\"}")
++    if(ANDROID)
++        string(JSON GB_MOD_JSON SET "${GB_MOD_JSON}" gd "{\"android\": \"${GEODE_GD_VERSION}\"}")
++    else()
++        string(JSON GB_MOD_JSON SET "${GB_MOD_JSON}" gd "{\"win\": \"${GEODE_GD_VERSION}\"}")
++    endif()
++    if(ANDROID)
++        # Eibyx/gd-mods port: the renderer's FFmpeg DLLs/dylibs are never
++        # loaded on Android (src/render/ffmpeg.hpp has no Android loader), so
++        # they stay out of the Android package instead of adding ~150 MB.
++        string(JSON GB_RES_COUNT LENGTH "${GB_MOD_JSON}" resources files)
++        math(EXPR GB_RES_LAST "${GB_RES_COUNT} - 1")
++        foreach(i RANGE ${GB_RES_LAST} 0 -1)
++            string(JSON GB_RES GET "${GB_MOD_JSON}" resources files ${i})
++            if(GB_RES MATCHES "ffmpeg_libs/")
++                string(JSON GB_MOD_JSON REMOVE "${GB_MOD_JSON}" resources files ${i})
++            endif()
++        endforeach()
++    endif()
+     string(JSON GB_RES_COUNT LENGTH "${GB_MOD_JSON}" resources files)
+     math(EXPR GB_RES_LAST "${GB_RES_COUNT} - 1")
+     foreach(i RANGE ${GB_RES_LAST})
+@@ -228,7 +267,7 @@ if(GB_GEODE6)
+     file(READ "${CMAKE_CURRENT_SOURCE_DIR}/about.md" GB_ABOUT)
+     string(REPLACE
+         "- Geometry Dash 2.2081 on Windows, macOS, iOS or Android, Geode 5.10.1+ (macOS, iOS and Android are experimental: see Platforms)"
+-        "- Geometry Dash ${GEODE_GD_VERSION} on Windows, with Geode ${GEODE_VERSION_FULL}. This file is a preview of GucciBot on GD ${GEODE_GD_VERSION}: everything except the Pathfinder. 240 TPS and any tick rate from 162 TPS up work; tick rates under 162 TPS, a TPS change inside a macro and High TPS precision don't yet. Those, and macOS and Android on GD ${GEODE_GD_VERSION}, come in 2.0.1. For another GD version or platform, use the GucciBot file made for it.\n- Keep only one GucciBot file in your mods folder."
++        "- Geometry Dash ${GEODE_GD_VERSION} on ${GB_PLATFORM_NAME}, with Geode ${GEODE_VERSION_FULL}. This file is a preview of GucciBot on GD ${GEODE_GD_VERSION}: everything except the Pathfinder. 240 TPS and any tick rate from 162 TPS up work; tick rates under 162 TPS, a TPS change inside a macro and High TPS precision don't yet. Those, and macOS and Android on GD ${GEODE_GD_VERSION}, come in 2.0.1. For another GD version or platform, use the GucciBot file made for it.\n- Keep only one GucciBot file in your mods folder."
+         GB_ABOUT "${GB_ABOUT}")
+     string(REPLACE
+         "- Silicate's full physics engine — exact GD 2.2081 offsets, proper TPS bypass,"
+@@ -239,7 +278,7 @@ if(GB_GEODE6)
+     # again below.)
+     set(GB_ABOUT "\n${GB_ABOUT}")
+     string(REGEX REPLACE "\n- Geometry Dash 2[.]2081[^\n]*"
+-        "\n- Geometry Dash ${GEODE_GD_VERSION} on Windows, with Geode ${GEODE_VERSION_FULL}. This file is a preview of GucciBot on GD ${GEODE_GD_VERSION}: everything except the Pathfinder. 240 TPS and any tick rate from 162 TPS up work; tick rates under 162 TPS, a TPS change inside a macro and High TPS precision don't yet. Those, and macOS and Android on GD ${GEODE_GD_VERSION}, come in 2.0.1. For another GD version or platform, use the GucciBot file made for it.\n- Keep only one GucciBot file in your mods folder."
++        "\n- Geometry Dash ${GEODE_GD_VERSION} on ${GB_PLATFORM_NAME}, with Geode ${GEODE_VERSION_FULL}. This file is a preview of GucciBot on GD ${GEODE_GD_VERSION}: everything except the Pathfinder. 240 TPS and any tick rate from 162 TPS up work; tick rates under 162 TPS, a TPS change inside a macro and High TPS precision don't yet. Those, and macOS and Android on GD ${GEODE_GD_VERSION}, come in 2.0.1. For another GD version or platform, use the GucciBot file made for it.\n- Keep only one GucciBot file in your mods folder."
+         GB_ABOUT "${GB_ABOUT}")
+     string(SUBSTRING "${GB_ABOUT}" 1 -1 GB_ABOUT)
+     # Anything else that still names 2.2081: the version number is swapped and
+diff --git a/patches/imgui-cocos-frame-scale-g6.patch b/patches/imgui-cocos-frame-scale-g6.patch
+new file mode 100644
+index 0000000..20d61cb
+--- /dev/null
++++ b/patches/imgui-cocos-frame-scale-g6.patch
+@@ -0,0 +1,63 @@
++diff --git a/include/imgui-cocos.hpp b/include/imgui-cocos.hpp
++index 17624bb..d25cf12 100644
++--- a/include/imgui-cocos.hpp
+++++ b/include/imgui-cocos.hpp
++@@ -72,4 +72,10 @@ public:
++ 	static cocos2d::CCPoint frameToCocos(const ImVec2& pos);
++ 
++ 	void runPreDrawCall();
+++
+++	// GucciBot patch (Android and iOS builds only): screen pixels per ImGui
+++	// unit. ImGui lays out a display this many times smaller than the GL
+++	// frame, its output is drawn this many times bigger and touches are mapped
+++	// to match, so the whole interface grows together. 1 changes nothing.
+++	static void setFrameScale(float scale);
++ };
++diff --git a/src/backend.cpp b/src/backend.cpp
++index 7b03a1f..cbdb46b 100644
++--- a/src/backend.cpp
+++++ b/src/backend.cpp
++@@ -290,14 +290,21 @@ void ImGuiCocos::reload() {
++ 	m_reloading = true;
++ }
++ 
+++// GucciBot patch: screen pixels per ImGui unit (imgui-cocos.hpp).
+++static float s_frameScale = 1.f;
+++
+++void ImGuiCocos::setFrameScale(float scale) {
+++	s_frameScale = scale > 0.f ? scale : 1.f;
+++}
+++
++ ImVec2 ImGuiCocos::cocosToFrame(const CCPoint& pos) {
++ 	auto* director = CCDirector::sharedDirector();
++ 	const auto frameSize = director->getOpenGLView()->getFrameSize() * geode::utils::getDisplayFactor();
++ 	const auto winSize = director->getWinSize();
++ 
++ 	return {
++-		pos.x / winSize.width * frameSize.width,
++-		(1.f - pos.y / winSize.height) * frameSize.height
+++		pos.x / winSize.width * frameSize.width / s_frameScale,
+++		(1.f - pos.y / winSize.height) * frameSize.height / s_frameScale
++ 	};
++ }
++ 
++@@ -307,8 +314,8 @@ CCPoint ImGuiCocos::frameToCocos(const ImVec2& pos) {
++ 	const auto winSize = director->getWinSize();
++ 
++ 	return {
++-		pos.x / frameSize.width * winSize.width,
++-		(1.f - pos.y / frameSize.height) * winSize.height
+++		pos.x * s_frameScale / frameSize.width * winSize.width,
+++		(1.f - pos.y * s_frameScale / frameSize.height) * winSize.height
++ 	};
++ }
++ 
++@@ -345,7 +352,7 @@ void ImGuiCocos::newFrame() {
++ 	const auto frameSize = director->getOpenGLView()->getFrameSize() * geode::utils::getDisplayFactor();
++ 
++ 	// glfw new frame
++-	io.DisplaySize = ImVec2(frameSize.width, frameSize.height);
+++	io.DisplaySize = ImVec2(frameSize.width / s_frameScale, frameSize.height / s_frameScale);
++ 	if (director->getDeltaTime() > 0.f) {
++ 		io.DeltaTime = director->getDeltaTime();
++ 	} else {

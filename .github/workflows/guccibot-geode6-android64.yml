@@ -1,0 +1,107 @@
+name: GucciBot · Geode 6.0.0 · Android64
+
+# GucciBot for GD 2.2091 on Geode 6.0.0, arm64-v8a. The source is upstream
+# Nigelx1/GucciBot at a pinned commit plus the patches in guccibot/patches,
+# so the 177 MB of upstream resources never have to live in this repo.
+#
+# No bindings/bindings-ref on purpose: GucciBot's CMakeLists.txt fetches its
+# own pinned bindings and patches them (bindings-g6-copyable-renames.patch).
+# With bindings-ref the action would hand it unpatched bindings.
+
+on:
+  workflow_dispatch:
+    inputs:
+      publish:
+        description: "Publish the .geode as a GitHub Release"
+        type: boolean
+        default: false
+  push:
+    branches: [ "main", "geode6/**" ]
+    tags: [ "guccibot-geode6-*" ]
+    paths:
+      - "guccibot/**"
+      - ".github/workflows/guccibot-geode6-android64.yml"
+
+env:
+  UPSTREAM_REPO: Nigelx1/GucciBot
+  UPSTREAM_REF: 413b78029177fc505d5b9717f94737db78c44fb4
+
+jobs:
+  build:
+    name: GucciBot Android64
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          path: port
+
+      - uses: actions/checkout@v4
+        with:
+          repository: ${{ env.UPSTREAM_REPO }}
+          ref: ${{ env.UPSTREAM_REF }}
+          path: guccibot-src
+
+      - name: Apply the Android64 / Geode 6.0.0 patches
+        working-directory: guccibot-src
+        run: |
+          set -euo pipefail
+          for p in ../port/guccibot/patches/*.patch; do
+            echo "applying $p"
+            git apply --whitespace=nowarn "$p"
+          done
+          git status --short
+
+      - name: Build
+        id: build
+        uses: geode-sdk/build-geode-mod@dce36b35e1c3d9d8af92347760b12eba3caf4004
+        with:
+          sdk: "6.0.0"
+          path: guccibot-src
+          target: Android64
+          build-config: Release
+          build-args: "-- -k 0"
+
+      - name: Inspect the .geode
+        run: |
+          set -euo pipefail
+          f=$(ls ${{ steps.build.outputs.build-output }}/*.geode | head -1)
+          ls -la "$f"
+          tmp=$(mktemp -d); unzip -q "$f" -d "$tmp"
+          so=$(find "$tmp" -name '*.android64.so' | head -1)
+          test -n "$so" || { echo "no android64 .so in the package"; exit 1; }
+          file "$so"
+          readelf -lW "$so" | awk '/LOAD/{print "LOAD align", $NF}'
+          python3 -c "import json;d=json.load(open('$tmp/mod.json'));print('geode',d['geode'],'gd',d['gd'],'version',d['version'])"
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: guccibot-android64
+          path: ${{ steps.build.outputs.build-output }}/*.geode
+
+  release:
+    name: Publish release
+    needs: build
+    if: startsWith(github.ref, 'refs/tags/guccibot-geode6-') || (github.event_name == 'workflow_dispatch' && inputs.publish)
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          name: guccibot-android64
+          path: out
+      - name: Create or update release
+        env:
+          GH_TOKEN: ${{ github.token }}
+          GH_REPO: ${{ github.repository }}
+        run: |
+          set -euo pipefail
+          tag="guccibot-v2.0.0-geode6.0.0-android64"
+          notes="**GucciBot** v2.0.0 (\`nigelx1.guccibot\`) for Geometry Dash 2.2091, Geode 6.0.0, Android arm64-v8a only.
+
+          Upstream ${UPSTREAM_REPO}@${UPSTREAM_REF::7} plus guccibot/patches from ${GITHUB_SHA::7}. Experimental: see COMPATIBILITY.md."
+          if gh release view "$tag" >/dev/null 2>&1; then
+            gh release upload "$tag" out/*.geode --clobber
+          else
+            gh release create "$tag" out/*.geode --title "GucciBot v2.0.0 · Geode 6.0.0 · Android64 (experimental)" --notes "$notes" --target "$GITHUB_SHA" --prerelease
+          fi
