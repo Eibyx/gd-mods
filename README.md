@@ -1,5 +1,22 @@
 # Geometry Dash 2.2091 Mods
 
+## Geode 6.0.0 stable · Android64 (arm64-v8a)
+
+Built by [`geode6-android64.yml`](.github/workflows/geode6-android64.yml) and [`guccibot-geode6-android64.yml`](.github/workflows/guccibot-geode6-android64.yml) against Geode `v6.0.0` and pinned `geode-sdk/bindings@94cead78`. One independent `.geode` per mod, arm64-v8a only.
+
+| Mod | Mod ID | Release |
+|-----|--------|---------|
+| QOLMod v3.0.0 | `thesillydoggo.qolmod` | [qolmod-v3.0.0-geode6.0.0-android64](https://github.com/Eibyx/gd-mods/releases/tag/qolmod-v3.0.0-geode6.0.0-android64) |
+| FFmpeg API v2.1.1 | `eclipse.ffmpeg-api` | [ffmpeg-api-v2.1.1-geode6.0.0-android64](https://github.com/Eibyx/gd-mods/releases/tag/ffmpeg-api-v2.1.1-geode6.0.0-android64) |
+| xdBot v2.6.12 (needs FFmpeg API) | `zilko.xdbot` | [xdbot-v2.6.12-geode6.0.0-android64](https://github.com/Eibyx/gd-mods/releases/tag/xdbot-v2.6.12-geode6.0.0-android64) |
+| GucciBot v2.0.0 (experimental) | `nigelx1.guccibot` | [guccibot-v2.0.0-geode6.0.0-android64](https://github.com/Eibyx/gd-mods/releases/tag/guccibot-v2.0.0-geode6.0.0-android64) |
+
+These compile; none has been tested on a device yet. What changed, what is disabled on Android and what still has to be checked: [COMPATIBILITY.md](COMPATIBILITY.md).
+
+Publishing: push a `geode6-*` tag (QOLMod, FFmpeg API, xdBot) or a `guccibot-geode6-*` tag (GucciBot), or run the workflow by hand with "publish" ticked.
+
+## Earlier alpha/beta ports (Exodi-dio)
+
 Mods ported to **Geode 6.0.0-alpha.3** for **GD 2.2091**, with xdBot and Jukebox on **Geode 6.0.0-beta.1**.
 
 I'm too tired of waiting for the geode devs 💔

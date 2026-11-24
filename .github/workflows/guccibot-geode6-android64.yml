@@ -66,6 +66,8 @@ jobs:
           set -euo pipefail
           f=$(ls ${{ steps.build.outputs.build-output }}/*.geode | head -1)
           ls -la "$f"
+          unzip -l "$f" | sort -k1 -rn | head -15
+          ! unzip -l "$f" | grep -E '\.(dll|dylib)$' || { echo "desktop FFmpeg libs leaked into the Android package"; exit 1; }
           tmp=$(mktemp -d); unzip -q "$f" -d "$tmp"
           so=$(find "$tmp" -name '*.android64.so' | head -1)
           test -n "$so" || { echo "no android64 .so in the package"; exit 1; }
